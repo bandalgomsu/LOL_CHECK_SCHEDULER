@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace lol_check_scheduler.src.app.subscribers.repository.interfaces
 {
-    public interface ISubscriberRepository : IRepositoryBase<>
+    public interface ISubscriberRepository : IRepositoryBase<Subscriber>
     {
 
     }

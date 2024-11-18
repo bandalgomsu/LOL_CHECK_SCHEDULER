@@ -11,6 +11,7 @@ namespace lol_check_scheduler.src.infrastructure.database
     {
         public DbSet<Summoner>? Summoner { get; set; }
         public DbSet<Device>? Device { get; set; }
+        public DbSet<Subscriber>? Subscriber { get; set; }
 
         public object? T { get; internal set; }
     }

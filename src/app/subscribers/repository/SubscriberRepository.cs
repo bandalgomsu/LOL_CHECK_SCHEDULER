@@ -6,8 +6,7 @@ using lol_check_scheduler.src.app.subscribers.repository.interfaces;
 
 namespace lol_check_scheduler.src.app.subscribers.repository
 {
-    public class SubscriberRepository : RepositoryBase<>, ISubscriberRepository
+    public class SubscriberRepository(DatabaseContext databaseContext) : RepositoryBase<Subscriber>(databaseContext), ISubscriberRepository
     {
-
     }
 }
