@@ -1,4 +1,6 @@
 using dotenv.net;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using lol_check_scheduler.src.app.devices.repository;
 using lol_check_scheduler.src.app.devices.repository.interfaces;
 using lol_check_scheduler.src.app.devices.service;
@@ -12,6 +14,7 @@ using lol_check_scheduler.src.app.summoners.repository.interfaces;
 using lol_check_scheduler.src.app.summoners.service;
 using lol_check_scheduler.src.app.summoners.service.interfaces;
 using lol_check_scheduler.src.infrastructure.database;
+using lol_check_scheduler.src.infrastructure.firebase;
 using lol_check_scheduler.src.infrastructure.riotclient;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,11 +54,18 @@ builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
 builder.Services.AddScoped<ISubscriberService, SubscriberService>();
 
 // RIOT_CLIENT_DI
-builder.Services.AddScoped<RiotClient>();
+builder.Services.AddSingleton<RiotClient>();
+
+// FCM_CLIENT_DI
+builder.Services.AddSingleton<FcmClient>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile("google-services.json")
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
