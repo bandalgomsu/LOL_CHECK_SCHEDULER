@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace lol_check_scheduler.src.infrastructure
+namespace lol_check_scheduler.src.infrastructure.database
 {
     public class AuditingInterceptor : SaveChangesInterceptor
     {

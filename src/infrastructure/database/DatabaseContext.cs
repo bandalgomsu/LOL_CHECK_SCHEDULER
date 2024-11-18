@@ -9,6 +9,13 @@ namespace lol_check_scheduler.src.infrastructure.database
 {
     public class DatabaseContext(DbContextOptions options) : DbContext(options)
     {
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.AddInterceptors(new AuditingInterceptor());
+            base.OnConfiguring(optionsBuilder);
+        }
+
         public DbSet<Summoner> Summoner { get; set; }
         public DbSet<Device> Device { get; set; }
         public DbSet<Subscriber> Subscriber { get; set; }
