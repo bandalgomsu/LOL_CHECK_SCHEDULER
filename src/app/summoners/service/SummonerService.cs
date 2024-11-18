@@ -4,14 +4,9 @@ using lol_check_scheduler.src.app.summoners.service.interfaces;
 
 namespace lol_check_scheduler.src.app.summoners.service
 {
-    public class SummonerService : ISummonerService
+    public class SummonerService(ISummonerRepository SummonerRepository) : ISummonerService
     {
-        private readonly ISummonerRepository _summonerRepository;
-
-        public SummonerService(ISummonerRepository SummonerRepository)
-        {
-            _summonerRepository = SummonerRepository;
-        }
+        private readonly ISummonerRepository _summonerRepository = SummonerRepository;
 
         public async Task<IEnumerable<Summoner>> GetSummonersByTopN(int n)
         {

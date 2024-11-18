@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace lol_check_scheduler.src.infrastructure.database.model
 {
-    public class Device
+    public class Device : BaseEntity
     {
         [Key]
         [Column("id")]
@@ -15,12 +15,6 @@ namespace lol_check_scheduler.src.infrastructure.database.model
         [Column("device_token")]
         [Required]
         public required string DeviceToken { get; set; }
-
-        [Column("created_at")]
-        public DateTime? CreatedAt { get; set; }
-
-        [Column("updated_at")]
-        public DateTime? UpdatedAt { get; set; }
 
         [Column("user_id")]
         [Required]

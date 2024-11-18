@@ -2,12 +2,8 @@ using lol_check_scheduler.src.app.summoners.repository.interfaces;
 
 namespace lol_check_scheduler.src.app.summoners.repository
 {
-    public class SummonerRepository : RepositoryBase<Summoner>, ISummonerRepository
+    public class SummonerRepository(DatabaseContext databaseContext) : RepositoryBase<Summoner>(databaseContext), ISummonerRepository
     {
-        public SummonerRepository(DatabaseContext databaseContext) : base(databaseContext)
-        {
-        }
-
         public async Task<IEnumerable<Summoner>> FindAllByTopN(int n)
         {
             return await databaseContext.Summoner

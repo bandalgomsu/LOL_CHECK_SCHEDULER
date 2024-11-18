@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace lol_check_scheduler.src.infrastructure.database.model
 {
-    public class Summoner
+    public class Summoner : BaseEntity
     {
         [Key]
         [Column("id")]
@@ -27,11 +27,5 @@ namespace lol_check_scheduler.src.infrastructure.database.model
 
         [Column("recent_game_id")]
         public int? RecentGameId { get; set; }
-
-        [Column("created_at")]
-        public DateTime? CreatedAt { get; set; }
-
-        [Column("updated_at")]
-        public DateTime? UpdatedAt { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 using dotenv.net;
 using lol_check_scheduler.src.app.devices.repository;
 using lol_check_scheduler.src.app.devices.repository.interfaces;
+using lol_check_scheduler.src.app.devices.service;
+using lol_check_scheduler.src.app.devices.service.interfaces;
 using lol_check_scheduler.src.app.summoners.repository;
 using lol_check_scheduler.src.app.summoners.repository.interfaces;
 using lol_check_scheduler.src.app.summoners.service;
@@ -38,6 +40,9 @@ builder.Services.AddScoped<ISummonerRepository, SummonerRepository>();
 
 // DEVICE DI
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+builder.Services.AddScoped<IDeviceService, DeviceService>();
+
+//SUBSCRIBER DI 
 
 // RIOT_CLIENT_DI
 builder.Services.AddScoped<RiotClient>();
