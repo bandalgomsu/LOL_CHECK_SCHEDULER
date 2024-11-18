@@ -3,6 +3,10 @@ using lol_check_scheduler.src.app.devices.repository;
 using lol_check_scheduler.src.app.devices.repository.interfaces;
 using lol_check_scheduler.src.app.devices.service;
 using lol_check_scheduler.src.app.devices.service.interfaces;
+using lol_check_scheduler.src.app.subscribers.repository;
+using lol_check_scheduler.src.app.subscribers.repository.interfaces;
+using lol_check_scheduler.src.app.subscribers.service;
+using lol_check_scheduler.src.app.subscribers.service.interfaces;
 using lol_check_scheduler.src.app.summoners.repository;
 using lol_check_scheduler.src.app.summoners.repository.interfaces;
 using lol_check_scheduler.src.app.summoners.service;
@@ -43,6 +47,8 @@ builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<IDeviceService, DeviceService>();
 
 //SUBSCRIBER DI 
+builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
+builder.Services.AddScoped<ISubscriberService, SubscriberService>();
 
 // RIOT_CLIENT_DI
 builder.Services.AddScoped<RiotClient>();
