@@ -26,6 +26,6 @@ namespace lol_check_scheduler.src.infrastructure.database.model
         public String? Introduce { get; set; }
 
         [Column("recent_game_id")]
-        public int? RecentGameId { get; set; }
+        public int RecentGameId { get; set; } = 0;
     }
 }
