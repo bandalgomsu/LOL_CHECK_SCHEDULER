@@ -10,7 +10,7 @@ namespace lol_check_scheduler.src.infrastructure.database.model
     {
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required]
         public String? Puuid { get; set; }
@@ -26,6 +26,6 @@ namespace lol_check_scheduler.src.infrastructure.database.model
         public String? Introduce { get; set; }
 
         [Column("recent_game_id")]
-        public int RecentGameId { get; set; } = 0;
+        public long RecentGameId { get; set; } = 0;
     }
 }

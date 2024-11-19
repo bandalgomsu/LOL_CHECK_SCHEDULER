@@ -10,7 +10,7 @@ namespace lol_check_scheduler.src.infrastructure.database.model
     {
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Column("device_token")]
         [Required]
@@ -18,6 +18,6 @@ namespace lol_check_scheduler.src.infrastructure.database.model
 
         [Column("user_id")]
         [Required]
-        public required int UserId { get; set; }
+        public required long UserId { get; set; }
     }
 }

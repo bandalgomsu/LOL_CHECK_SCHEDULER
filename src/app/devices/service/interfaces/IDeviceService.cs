@@ -7,6 +7,6 @@ namespace lol_check_scheduler.src.app.devices.service.interfaces
 {
     public interface IDeviceService
     {
-        Task<IEnumerable<String>> GetDeviceTokensByUserIds(IEnumerable<int> userIds);
+        Task<IEnumerable<string>> GetDeviceTokensByUserIds(IEnumerable<long> userIds);
     }
 }

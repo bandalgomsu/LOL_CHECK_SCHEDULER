@@ -7,6 +7,6 @@ namespace lol_check_scheduler.src.app.subscribers.service.interfaces
 {
     public interface ISubscriberService
     {
-        Task<IEnumerable<Subscriber>> GetSubscribersBySummonerId(int summonerId);
+        Task<IEnumerable<Subscriber>> GetSubscribersBySummonerId(long summonerId);
     }
 }

@@ -11,7 +11,7 @@ namespace lol_check_scheduler.src.app.subscribers.service
     {
         private readonly ISubscriberRepository _subscriberRepository = subscriberRepository;
 
-        public async Task<IEnumerable<Subscriber>> GetSubscribersBySummonerId(int summonerId)
+        public async Task<IEnumerable<Subscriber>> GetSubscribersBySummonerId(long summonerId)
         {
             return await _subscriberRepository.FindAllByCondition(subscriber => subscriber.SummonerId == summonerId);
         }

@@ -23,8 +23,8 @@ namespace test.src.app.subscribers
         [Fact(DisplayName = "GET_SUBSCRIBERS_BY_SUMMONER_ID_SUCCESS")]
         public async Task GET_SUBSCRIBERS_BY_SUMMONER_ID_SUCCESS()
         {
-            var summonerId = 1;
-            var subscriberId = 2;
+            var summonerId = 1L;
+            var subscriberId = 2L;
             _subscriberRepository.Setup(repo => repo.FindAllByCondition(subscriber => subscriber.SummonerId == summonerId))
                 .ReturnsAsync([new Subscriber { SummonerId = summonerId, SubscriberId = subscriberId }]);
 

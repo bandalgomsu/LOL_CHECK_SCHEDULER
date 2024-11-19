@@ -11,15 +11,15 @@ namespace lol_check_scheduler.src.infrastructure.database.model
     {
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Required]
         [Column("summoner_id")]
-        public required int SummonerId { get; set; }
+        public required long SummonerId { get; set; }
 
         [Required]
         [Column("subscriber_id")]
-        public required int SubscriberId { get; set; }
+        public required long SubscriberId { get; set; }
 
         [Column("summoner_game_name")]
         public string? SummonerGameName { get; set; }
