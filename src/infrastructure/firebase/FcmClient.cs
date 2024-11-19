@@ -22,5 +22,20 @@ namespace lol_check_scheduler.src.infrastructure.firebase
 
             await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(multicastMessage);
         }
+
+        public async Task SendMulticastMessage(FcmClientData.FmcMulticastMessage message, bool dryRun)
+        {
+            var multicastMessage = new MulticastMessage
+            {
+                Tokens = message.DeviceTokens.ToList(),
+                Notification = new Notification
+                {
+                    Title = message.Title,
+                    Body = message.Body,
+                }
+            };
+
+            await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(multicastMessage, dryRun);
+        }
     }
 }
