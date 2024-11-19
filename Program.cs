@@ -5,6 +5,7 @@ using lol_check_scheduler.src.app.devices.repository;
 using lol_check_scheduler.src.app.devices.repository.interfaces;
 using lol_check_scheduler.src.app.devices.service;
 using lol_check_scheduler.src.app.devices.service.interfaces;
+using lol_check_scheduler.src.app.scheduler;
 using lol_check_scheduler.src.app.subscribers.repository;
 using lol_check_scheduler.src.app.subscribers.repository.interfaces;
 using lol_check_scheduler.src.app.subscribers.service;
@@ -58,6 +59,9 @@ builder.Services.AddSingleton<RiotClient>();
 
 // FCM_CLIENT_DI
 builder.Services.AddSingleton<FcmClient>();
+
+// SCHEDULER_DI
+builder.Services.AddHostedService<CheckPlayingGameScheduler>();
 
 var app = builder.Build();
 

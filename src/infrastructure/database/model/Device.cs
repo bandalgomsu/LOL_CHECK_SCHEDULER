@@ -10,7 +10,7 @@ namespace lol_check_scheduler.src.infrastructure.database.model
     {
         [Key]
         [Column("id")]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [Column("device_token")]
         [Required]
