@@ -15,7 +15,7 @@ namespace test.src.app.summoners
 
         public SummonerRepositoryTest()
         {
-            var env = DotEnv.Read(new DotEnvOptions(overwriteExistingVars: true, envFilePaths: ["../../../.env"]));
+            var env = DotEnv.Read(new DotEnvOptions(overwriteExistingVars: true, envFilePaths: ["../../../../.env"]));
 
             var host = env["TEST_DB_HOST"];
             var name = env["TEST_DB_NAME"];
@@ -58,8 +58,8 @@ namespace test.src.app.summoners
 
 
 
-        [Fact(DisplayName = "FIND_ALL_BY_TOP_N_성공_테스트")]
-        public async Task FIND_ALL_BY_TOP_N_성공_테스트()
+        [Fact(DisplayName = "FIND_ALL_BY_TOP_SUCCESS")]
+        public async Task FIND_ALL_BY_TOP_N_SUCCESS()
         {
             var summoners = await _summonerRepository.FindAllByTopN(20);
 
