@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
 using lol_check_scheduler.src.app.devices.service.interfaces;
 using lol_check_scheduler.src.app.scheduler;
 using lol_check_scheduler.src.app.subscribers.service.interfaces;
@@ -57,7 +59,7 @@ namespace test.src.app.scheduler
             S3 => 게임을 시작한 소환사의 최근 게임 ID 값이 현재 게임 ID와 같음
             S4 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재하지 않음
             S5 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재 , 구독자의 토큰이 존재하지 않음 
-            S6 =>
+            S6 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재 , 구독자의 토큰이 존재 , 푸시 실패
         **/
 
         // S1 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 1명 이상 존재 , 구독자의 토큰 1개 이상 존재 , 푸시 정상 발송 
@@ -247,9 +249,9 @@ namespace test.src.app.scheduler
             _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()))
                 .ThrowsAsync(new Exception());
 
-            await _checkPlayingGameScheduler.CheckPlayingGameJob();
 
-            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Never);
+
+            await Assert.ThrowsAsync<Exception>(async () => await _checkPlayingGameScheduler.CheckPlayingGameJob());
         }
     }
 }
