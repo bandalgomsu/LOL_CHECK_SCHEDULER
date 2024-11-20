@@ -73,7 +73,7 @@ namespace lol_check_scheduler.src.app.scheduler
 
                 await Task.WhenAll(tasks);
 
-                if (forUpdateSummoner.Count == 0)
+                if (!forUpdateSummoner.Any())
                 {
                     return;
                 }
@@ -92,11 +92,16 @@ namespace lol_check_scheduler.src.app.scheduler
             }
         }
 
-        private async Task<IEnumerable<Summoner>> SendMulticastMessageProcess(IEnumerable<Summoner> forUpdateSummoner, ISubscriberService subscriberService, IDeviceService deviceService)
+        private async Task<IEnumerable<Summoner?>> SendMulticastMessageProcess(IEnumerable<Summoner> forUpdateSummoner, ISubscriberService subscriberService, IDeviceService deviceService)
         {
             var tasks = forUpdateSummoner.Select(async summoner =>
             {
                 IEnumerable<string> tokens = await GetTokens(summoner, subscriberService, deviceService);
+
+                if (!tokens.Any())
+                {
+                    return null;
+                }
 
                 var message = FcmClientData.FmcMulticastMessage.CreateCheckedPlayingGameMessage(tokens, summoner);
 
@@ -105,7 +110,7 @@ namespace lol_check_scheduler.src.app.scheduler
                 return summoner;
             });
 
-            return await Task.WhenAll(tasks);
+            return (await Task.WhenAll(tasks)).Where(summoner => summoner != null);
         }
 
         private async Task<IEnumerable<string>> GetTokens(Summoner summoner, ISubscriberService subscriberService, IDeviceService deviceService)

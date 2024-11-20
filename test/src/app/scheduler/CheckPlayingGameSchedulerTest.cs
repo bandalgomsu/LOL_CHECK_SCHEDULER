@@ -126,7 +126,7 @@ namespace test.src.app.scheduler
         }
 
         // S3 => 게임을 시작한 소환사의 최근 게임 ID 값이 현재 게임 ID와 같음
-        [Fact(DisplayName = "CHECK_PLAYING_GAME_S1")]
+        [Fact(DisplayName = "CHECK_PLAYING_GAME_S3")]
         public async Task CHECK_PLAYING_GAME_S3()
         {
             var summoner = new Summoner
@@ -148,5 +148,37 @@ namespace test.src.app.scheduler
             _subscriberService.Verify(service => service.GetSubscribersBySummonerId(It.IsAny<long>()), Times.Never);
         }
 
+        // S4 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재 X 
+        [Fact(DisplayName = "CHECK_PLAYING_GAME_S4")]
+        public async Task CHECK_PLAYING_GAME_S4()
+        {
+            var summoner = new Summoner
+            {
+                Id = 1,
+                Puuid = "TEST_PUUID",
+                GameName = "TEST_GAME_NAME",
+                TagLine = "TEST_TAG_LINE",
+                RecentGameId = 1
+            };
+
+            _summonerService.Setup(service => service.GetSummonersByTopN(49)).ReturnsAsync([summoner]);
+            _riotClient.Setup(client => client.GetCurrentGameInfo(summoner.Puuid!)).ReturnsAsync(
+                new RiotClientData.CurrentGameInfo { GameId = 2 }
+            );
+
+            _subscriberService.Setup(service => service.GetSubscribersBySummonerId(summoner.Id!)).ReturnsAsync(
+                []
+            );
+            var tokens = new List<string> { "TEST_TOKEN" };
+
+            _deviceService.Setup(service => service.GetDeviceTokensByUserIds(It.IsAny<IEnumerable<long>>())).ReturnsAsync(tokens);
+            _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()));
+
+            // _summonerService.Setup(service => service.PatchSummoner(summoner));
+
+            await _checkPlayingGameScheduler.CheckPlayingGameJob();
+
+            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Once);
+        }
     }
 }
