@@ -73,6 +73,11 @@ namespace lol_check_scheduler.src.app.scheduler
 
                 await Task.WhenAll(tasks);
 
+                if (forUpdateSummoner.Count == 0)
+                {
+                    return;
+                }
+
                 // 업데이트가 필요한 Summoner 목록을 전송합니다.
                 IEnumerable<Summoner> success = await SendMulticastMessageProcess(forUpdateSummoner, subscriberService, deviceService);
 

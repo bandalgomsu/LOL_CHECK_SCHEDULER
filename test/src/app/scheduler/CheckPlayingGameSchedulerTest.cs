@@ -53,12 +53,16 @@ namespace test.src.app.scheduler
 
         /**
             S1 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 1명 이상 존재 , 구독자의 토큰 1개 이상 존재 , 푸시 정상 발송  
-            S2 =>
-            S3 =>
+            S2 => 게임을 시작한 소환사 감지 X
+            S3 => 게임을 시작한 소환사의 최근 게임 ID 값이 현재 게임 ID와 같음
+            S4 =>
+            S5 =>
+            S6 =>
         **/
 
-        [Fact(DisplayName = "CHECK_PLAYING_GAME_CHECK_PLAYING_SUMMONER_SUCCESS")]
-        public async Task CHECK_PLAYING_GAME_S1_CHECK_PLAYING_SUMMONER()
+        // S1 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 1명 이상 존재 , 구독자의 토큰 1개 이상 존재 , 푸시 정상 발송 
+        [Fact(DisplayName = "CHECK_PLAYING_GAME_S1")]
+        public async Task CHECK_PLAYING_GAME_S1()
         {
             var summoner = new Summoner
             {
@@ -97,5 +101,52 @@ namespace test.src.app.scheduler
 
             _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Once);
         }
+
+        // S2 => 게임을 시작한 소환사 감지 X
+        [Fact(DisplayName = "CHECK_PLAYING_GAME_S2")]
+        public async Task CHECK_PLAYING_GAME_S2()
+        {
+            var summoner = new Summoner
+            {
+                Id = 1,
+                Puuid = "TEST_PUUID",
+                GameName = "TEST_GAME_NAME",
+                TagLine = "TEST_TAG_LINE",
+                RecentGameId = 1
+            };
+
+            _summonerService.Setup(service => service.GetSummonersByTopN(49)).ReturnsAsync([summoner]);
+            _riotClient.Setup(client => client.GetCurrentGameInfo(summoner.Puuid!)).ReturnsAsync(
+                new RiotClientData.CurrentGameInfo { IsCurrentPlayingGame = false }
+            );
+
+            await _checkPlayingGameScheduler.CheckPlayingGameJob();
+
+            _subscriberService.Verify(service => service.GetSubscribersBySummonerId(It.IsAny<long>()), Times.Never);
+        }
+
+        // S3 => 게임을 시작한 소환사의 최근 게임 ID 값이 현재 게임 ID와 같음
+        [Fact(DisplayName = "CHECK_PLAYING_GAME_S1")]
+        public async Task CHECK_PLAYING_GAME_S3()
+        {
+            var summoner = new Summoner
+            {
+                Id = 1,
+                Puuid = "TEST_PUUID",
+                GameName = "TEST_GAME_NAME",
+                TagLine = "TEST_TAG_LINE",
+                RecentGameId = 1
+            };
+
+            _summonerService.Setup(service => service.GetSummonersByTopN(49)).ReturnsAsync([summoner]);
+            _riotClient.Setup(client => client.GetCurrentGameInfo(summoner.Puuid!)).ReturnsAsync(
+                new RiotClientData.CurrentGameInfo { GameId = 1 }
+            );
+
+            await _checkPlayingGameScheduler.CheckPlayingGameJob();
+
+            _subscriberService.Verify(service => service.GetSubscribersBySummonerId(It.IsAny<long>()), Times.Never);
+        }
+
     }
 }
