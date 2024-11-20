@@ -13,29 +13,32 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
         private const string RIOT_GET_PUUID_URL = "https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/";
         private const string RIOT_CHECK_CURRENT_GAME_INFO_URL = "https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/";
 
-        private readonly string riotApiKey = DotEnv.Read()["RIOT_API_KEY"];
+        private readonly string _riotApiKey;
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
-        private readonly HttpClient httpClient;
-
-        public RiotClient(HttpClient httpClient)
+        public RiotClient(HttpClient httpClient, IConfiguration configuration)
         {
-            this.httpClient = httpClient;
+            _httpClient = httpClient;
+            _configuration = configuration;
+            _riotApiKey = _configuration["RiotApiKey"]!;
         }
 
         public async Task<RiotClientData.GetPuuidResponse> GetPuuid(string gameName, string tagLine)
         {
-            var url = $"https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}?api_key={riotApiKey}";
+            var url = $"https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}?api_key={_riotApiKey}";
 
-            var response = await httpClient.GetAsync(url);
+            var response = await _httpClient.GetAsync(url);
 
             try
             {
                 response.EnsureSuccessStatusCode();
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
+
                 return JsonSerializer.Deserialize<RiotClientData.GetPuuidResponse>(jsonResponse) ?? throw new Exception();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_SUMMONER_NOT_FOUND);
             }
@@ -43,9 +46,9 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
 
         public async Task<RiotClientData.CurrentGameInfo> GetCurrentGameInfo(string puuid)
         {
-            var url = $"https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/{puuid}?api_key={riotApiKey}";
+            var url = $"https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/{puuid}?api_key={_riotApiKey}";
 
-            var response = await httpClient.GetAsync(url);
+            var response = await _httpClient.GetAsync(url);
 
             try
             {

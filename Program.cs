@@ -42,6 +42,8 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseMySQL(connection)
 );
 
+builder.Configuration["RiotApiKey"] = env["RIOT_API_KEY"];
+
 // SUMMONER DI
 builder.Services.AddScoped<ISummonerService, SummonerService>();
 builder.Services.AddScoped<ISummonerRepository, SummonerRepository>();

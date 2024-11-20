@@ -10,14 +10,15 @@ namespace lol_check_scheduler.src.app.summoners.controller
 {
     [ApiController]
     [Route("api/v1/summoners")]
-    public class SummonerController(ISummonerService summonerService) : ControllerBase
+    public class SummonerController(ISummonerService summonerService, RiotClient riotClient) : ControllerBase
     {
         private readonly ISummonerService _summonerService = summonerService;
+        private readonly RiotClient _riotClient = riotClient;
 
         [HttpGet]
-        public async Task<IEnumerable<Summoner>> Test()
+        public async Task<RiotClientData.GetPuuidResponse> Test()
         {
-            return await _summonerService.GetSummonersByTopN(49);
+            return await _riotClient.GetPuuid("1", "1");
         }
     }
 }
