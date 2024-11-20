@@ -21,7 +21,7 @@ namespace test.src.infrastructure.firebase
         private readonly FcmClient _fcmClient = new();
 
         [Fact(DisplayName = "SEND_MULTICAST_MESSAGE_SUCCESS")]
-        public async void SEND_MULTICAST_MESSAGE_SUCCESS()
+        public async Task SEND_MULTICAST_MESSAGE_SUCCESS()
         {
             var message = new FcmClientData.FmcMulticastMessage
             {

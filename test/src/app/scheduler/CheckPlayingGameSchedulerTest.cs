@@ -7,7 +7,9 @@ using lol_check_scheduler.src.app.scheduler;
 using lol_check_scheduler.src.app.subscribers.service.interfaces;
 using lol_check_scheduler.src.app.summoners.service.interfaces;
 using lol_check_scheduler.src.infrastructure.firebase;
+using lol_check_scheduler.src.infrastructure.firebase.interfaces;
 using lol_check_scheduler.src.infrastructure.riotclient;
+using lol_check_scheduler.src.infrastructure.riotclient.interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
@@ -18,8 +20,8 @@ namespace test.src.app.scheduler
     {
         private readonly Mock<IServiceScopeFactory> _serviceScopeFactory = new Mock<IServiceScopeFactory>();
         private readonly Mock<IServiceScope> _serviceScope = new Mock<IServiceScope>();
-        private readonly Mock<RiotClient> _riotClient = new Mock<RiotClient>();
-        private readonly Mock<FcmClient> _fcmClient = new Mock<FcmClient>();
+        private readonly Mock<IRiotClient> _riotClient = new Mock<IRiotClient>();
+        private readonly Mock<IFcmClient> _fcmClient = new Mock<IFcmClient>();
         private readonly Mock<ISummonerService> _summonerService = new Mock<ISummonerService>();
         private readonly Mock<IDeviceService> _deviceService = new Mock<IDeviceService>();
         private readonly Mock<ISubscriberService> _subscriberService = new Mock<ISubscriberService>();

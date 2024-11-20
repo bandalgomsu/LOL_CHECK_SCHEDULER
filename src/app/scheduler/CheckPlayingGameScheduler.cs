@@ -31,7 +31,7 @@ namespace lol_check_scheduler.src.app.scheduler
         public Task StartAsync(CancellationToken cancellationToken)
         {
             // 1분마다 비동기 메서드를 실행하도록 타이머 설정
-            _timer = new Timer(ExecuteTaskAsync, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+            _timer = new Timer(ExecuteTaskAsync!, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
             return Task.CompletedTask;
         }
 
@@ -41,7 +41,7 @@ namespace lol_check_scheduler.src.app.scheduler
             {
                 await CheckPlayingGameJob();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // 예외 처리
             }
@@ -76,10 +76,14 @@ namespace lol_check_scheduler.src.app.scheduler
                 // 업데이트가 필요한 Summoner 목록을 전송합니다.
                 IEnumerable<Summoner> success = await SendMulticastMessageProcess(forUpdateSummoner, subscriberService, deviceService);
 
-                foreach (var summoner in success)
-                {
-                    await summonerService.PatchSummoner(summoner);
-                }
+                _ = Task.Run(async () =>
+                    {
+                        foreach (var summoner in success)
+                        {
+                            await summonerService.PatchSummoner(summoner);
+                        }
+                    }
+                );
             }
         }
 
@@ -91,7 +95,7 @@ namespace lol_check_scheduler.src.app.scheduler
 
                 var message = FcmClientData.FmcMulticastMessage.CreateCheckedPlayingGameMessage(tokens, summoner);
 
-                _fcmClient.SendMulticastMessage(message);
+                await _fcmClient.SendMulticastMessage(message);
 
                 return summoner;
             });
