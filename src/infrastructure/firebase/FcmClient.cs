@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FirebaseAdmin.Messaging;
+using lol_check_scheduler.src.common.exception;
 using lol_check_scheduler.src.infrastructure.firebase.interfaces;
 
 namespace lol_check_scheduler.src.infrastructure.firebase

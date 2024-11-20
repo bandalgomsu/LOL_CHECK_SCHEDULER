@@ -55,8 +55,8 @@ namespace test.src.app.scheduler
             S1 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 1명 이상 존재 , 구독자의 토큰 1개 이상 존재 , 푸시 정상 발송  
             S2 => 게임을 시작한 소환사 감지 X
             S3 => 게임을 시작한 소환사의 최근 게임 ID 값이 현재 게임 ID와 같음
-            S4 =>
-            S5 =>
+            S4 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재하지 않음
+            S5 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재 , 구독자의 토큰이 존재하지 않음 
             S6 =>
         **/
 
@@ -94,8 +94,6 @@ namespace test.src.app.scheduler
 
             _deviceService.Setup(service => service.GetDeviceTokensByUserIds(It.IsAny<IEnumerable<long>>())).ReturnsAsync(tokens);
             _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()));
-
-            // _summonerService.Setup(service => service.PatchSummoner(summoner));
 
             await _checkPlayingGameScheduler.CheckPlayingGameJob();
 
@@ -148,7 +146,7 @@ namespace test.src.app.scheduler
             _subscriberService.Verify(service => service.GetSubscribersBySummonerId(It.IsAny<long>()), Times.Never);
         }
 
-        // S4 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재 X 
+        // S4 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재하지 않음
         [Fact(DisplayName = "CHECK_PLAYING_GAME_S4")]
         public async Task CHECK_PLAYING_GAME_S4()
         {
@@ -169,16 +167,89 @@ namespace test.src.app.scheduler
             _subscriberService.Setup(service => service.GetSubscribersBySummonerId(summoner.Id!)).ReturnsAsync(
                 []
             );
-            var tokens = new List<string> { "TEST_TOKEN" };
-
-            _deviceService.Setup(service => service.GetDeviceTokensByUserIds(It.IsAny<IEnumerable<long>>())).ReturnsAsync(tokens);
-            _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()));
-
-            // _summonerService.Setup(service => service.PatchSummoner(summoner));
 
             await _checkPlayingGameScheduler.CheckPlayingGameJob();
 
-            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Once);
+            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Never);
+        }
+
+        // S5 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재 , 구독자의 토큰이 존재하지 않음 
+        [Fact(DisplayName = "CHECK_PLAYING_GAME_S5")]
+        public async Task CHECK_PLAYING_GAME_S5()
+        {
+            var summoner = new Summoner
+            {
+                Id = 1,
+                Puuid = "TEST_PUUID",
+                GameName = "TEST_GAME_NAME",
+                TagLine = "TEST_TAG_LINE",
+                RecentGameId = 1
+            };
+
+            _summonerService.Setup(service => service.GetSummonersByTopN(49)).ReturnsAsync([summoner]);
+            _riotClient.Setup(client => client.GetCurrentGameInfo(summoner.Puuid!)).ReturnsAsync(
+                new RiotClientData.CurrentGameInfo { GameId = 2 }
+            );
+
+            var subscriber = new Subscriber
+            {
+                Id = 1,
+                SummonerId = summoner.Id,
+                SubscriberId = 1,
+                SummonerGameName = summoner.GameName,
+                SummonerTagLine = summoner.TagLine,
+            };
+
+            _subscriberService.Setup(service => service.GetSubscribersBySummonerId(summoner.Id!)).ReturnsAsync(
+                [subscriber]
+            );
+
+            _deviceService.Setup(service => service.GetDeviceTokensByUserIds(It.IsAny<IEnumerable<long>>())).ReturnsAsync([]);
+
+            await _checkPlayingGameScheduler.CheckPlayingGameJob();
+
+            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Never);
+        }
+
+        // S6 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재 , 구독자의 토큰이 존재 , 푸시 실패
+        [Fact(DisplayName = "CHECK_PLAYING_GAME_S6")]
+        public async Task CHECK_PLAYING_GAME_S6()
+        {
+            var summoner = new Summoner
+            {
+                Id = 1,
+                Puuid = "TEST_PUUID",
+                GameName = "TEST_GAME_NAME",
+                TagLine = "TEST_TAG_LINE",
+                RecentGameId = 1
+            };
+
+            _summonerService.Setup(service => service.GetSummonersByTopN(49)).ReturnsAsync([summoner]);
+            _riotClient.Setup(client => client.GetCurrentGameInfo(summoner.Puuid!)).ReturnsAsync(
+                new RiotClientData.CurrentGameInfo { GameId = 2 }
+            );
+
+            var subscriber = new Subscriber
+            {
+                Id = 1,
+                SummonerId = summoner.Id,
+                SubscriberId = 1,
+                SummonerGameName = summoner.GameName,
+                SummonerTagLine = summoner.TagLine,
+            };
+
+            _subscriberService.Setup(service => service.GetSubscribersBySummonerId(summoner.Id!)).ReturnsAsync(
+                [subscriber]
+            );
+            var tokens = new List<string> { "TEST_TOKEN" };
+
+            _deviceService.Setup(service => service.GetDeviceTokensByUserIds(It.IsAny<IEnumerable<long>>())).ReturnsAsync(tokens);
+            _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()))
+                .ThrowsAsync(new Exception());
+
+            await _checkPlayingGameScheduler.CheckPlayingGameJob();
+
+            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Never);
         }
     }
 }
