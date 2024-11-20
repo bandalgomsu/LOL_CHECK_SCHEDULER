@@ -28,6 +28,14 @@ namespace lol_check_scheduler.src.infrastructure.database
 
             return entity;
         }
+
+        public async Task<T> Patch(T entity)
+        {
+            await databaseContext.SaveChangesAsync();
+
+            return entity;
+        }
+
         public async Task<T> Update(T entity)
         {
             databaseContext.Set<T>().Update(entity);

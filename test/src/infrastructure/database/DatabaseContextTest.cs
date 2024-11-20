@@ -62,6 +62,49 @@ namespace test.src.infrastructure.database
             Assert.Equal(50, summoners.Count());
         }
 
+        [Fact(DisplayName = "FIND_BY_ID_SUCCESS")]
+        public async Task FIND_BY_ID_SUCCESS()
+        {
+            var summoner = await _databaseContext.Set<Summoner>().Where(summoner => summoner.Id == 1).FirstOrDefaultAsync();
+
+            Assert.Equal(1, summoner!.Id);
+        }
+
+        [Fact(DisplayName = "FIND_BY_ID_IS_NULL")]
+        public async Task FIND_BY_ID_IS_NULL()
+        {
+            var summoner = await _databaseContext.Set<Summoner>().Where(summoner => summoner.Id == 51).FirstOrDefaultAsync();
+
+            Assert.Null(summoner);
+        }
+
+        [Fact(DisplayName = "UPDATE_TAG_LINE_SUCCESS")]
+        public async Task UPDATE_TAG_LINE_SUCCESS()
+        {
+            var summoner = await _databaseContext.Set<Summoner>().Where(summoner => summoner.Id == 1).FirstOrDefaultAsync();
+
+            summoner!.TagLine = "UPDATE";
+            _databaseContext.Set<Summoner>().Update(summoner);
+            await _databaseContext.SaveChangesAsync();
+
+            var update = await _databaseContext.Set<Summoner>().Where(summoner => summoner.Id == 1).FirstOrDefaultAsync();
+
+            Assert.Equal("UPDATE", update!.TagLine);
+        }
+
+        [Fact(DisplayName = "DELETE_SUCCESS")]
+        public async Task DELETE_SUCCESS()
+        {
+            var summoner = await _databaseContext.Set<Summoner>().Where(summoner => summoner.Id == 1).FirstOrDefaultAsync();
+
+            _databaseContext.Set<Summoner>().Remove(summoner!);
+            await _databaseContext.SaveChangesAsync();
+
+            var delete = await _databaseContext.Set<Summoner>().Where(summoner => summoner.Id == 1).FirstOrDefaultAsync();
+
+            Assert.Null(delete);
+        }
+
         public void Dispose()
         {
             _databaseContext.Database.EnsureDeleted();
