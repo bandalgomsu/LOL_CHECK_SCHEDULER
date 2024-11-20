@@ -52,7 +52,7 @@ namespace test.src.app.scheduler
         }
 
         /**
-            S1 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 1명 이상 존재 , 구독자의 토큰 1개 이상 존재 ,   
+            S1 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 1명 이상 존재 , 구독자의 토큰 1개 이상 존재 , 푸시 정상 발송  
             S2 =>
             S3 =>
         **/
@@ -94,6 +94,8 @@ namespace test.src.app.scheduler
             // _summonerService.Setup(service => service.PatchSummoner(summoner));
 
             await _checkPlayingGameScheduler.CheckPlayingGameJob();
+
+            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Once);
         }
     }
 }
