@@ -37,7 +37,7 @@ namespace test.src.infrastructure.database
                 {
                     Puuid = i.ToString() + ": PUUID",
                     GameName = i.ToString() + ": GAME_NAME",
-                    TagLine = i.ToString() + ": TAG_LINE",
+                    TagLine = "TAG_LINE",
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                 };
@@ -46,10 +46,18 @@ namespace test.src.infrastructure.database
             }
         }
 
-        [Fact(DisplayName = "FIND_BY_ALL_SUCCESS")]
-        public async Task FIND_BY_ALL_SUCCESS()
+        [Fact(DisplayName = "FIND_ALL_SUCCESS")]
+        public async Task FIND_ALL_SUCCESS()
         {
             var summoners = await _databaseContext.Set<Summoner>().ToListAsync();
+
+            Assert.Equal(50, summoners.Count());
+        }
+
+        [Fact(DisplayName = "FIND_ALL_BY_TAG_LINE_SUCCESS")]
+        public async Task FIND_ALL_BY_TAG_LINE_SUCCESS()
+        {
+            var summoners = await _databaseContext.Set<Summoner>().Where(summoner => summoner.TagLine == "TAG_LINE").ToListAsync();
 
             Assert.Equal(50, summoners.Count());
         }
