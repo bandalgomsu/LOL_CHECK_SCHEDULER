@@ -7,19 +7,21 @@ using lol_check_scheduler.src.app.devices.service.interfaces;
 using lol_check_scheduler.src.app.subscribers.service.interfaces;
 using lol_check_scheduler.src.app.summoners.service.interfaces;
 using lol_check_scheduler.src.infrastructure.firebase;
+using lol_check_scheduler.src.infrastructure.firebase.interfaces;
 using lol_check_scheduler.src.infrastructure.riotclient;
+using lol_check_scheduler.src.infrastructure.riotclient.interfaces;
 
 namespace lol_check_scheduler.src.app.scheduler
 {
     public class CheckPlayingGameScheduler : IHostedService, IDisposable
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly RiotClient _riotClient;
-        private readonly FcmClient _fcmClient;
+        private readonly IRiotClient _riotClient;
+        private readonly IFcmClient _fcmClient;
 
         private Timer? _timer;
 
-        public CheckPlayingGameScheduler(IServiceScopeFactory serviceScopeFactory, RiotClient riotClient, FcmClient fcmClient)
+        public CheckPlayingGameScheduler(IServiceScopeFactory serviceScopeFactory, IRiotClient riotClient, IFcmClient fcmClient)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _riotClient = riotClient;

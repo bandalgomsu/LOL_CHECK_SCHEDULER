@@ -15,15 +15,17 @@ namespace lol_check_scheduler.src.infrastructure.database.model
 
         [Required]
         [Column("summoner_id")]
-        public required long SummonerId { get; set; }
+        public long SummonerId { get; set; }
 
         [Required]
         [Column("subscriber_id")]
-        public required long SubscriberId { get; set; }
+        public long SubscriberId { get; set; }
 
+        [Required]
         [Column("summoner_game_name")]
         public string? SummonerGameName { get; set; }
 
+        [Required]
         [Column("summoner_tag_line")]
         public string? SummonerTagLine { get; set; }
     }

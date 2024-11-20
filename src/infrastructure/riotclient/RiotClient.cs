@@ -6,10 +6,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using dotenv.net;
 using lol_check_scheduler.src.common.exception;
+using lol_check_scheduler.src.infrastructure.riotclient.interfaces;
 
 namespace lol_check_scheduler.src.infrastructure.riotclient
 {
-    public class RiotClient
+    public class RiotClient : IRiotClient
     {
         private const string RIOT_GET_PUUID_URL = "https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/";
         private const string RIOT_CHECK_CURRENT_GAME_INFO_URL = "https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/";

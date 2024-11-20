@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FirebaseAdmin.Messaging;
+using lol_check_scheduler.src.infrastructure.firebase.interfaces;
 
 namespace lol_check_scheduler.src.infrastructure.firebase
 {
-    public class FcmClient
+    public class FcmClient : IFcmClient
     {
-        public async void SendMulticastMessage(FcmClientData.FmcMulticastMessage message)
+        public async Task SendMulticastMessage(FcmClientData.FmcMulticastMessage message)
         {
             var multicastMessage = new MulticastMessage
             {

@@ -16,7 +16,9 @@ using lol_check_scheduler.src.app.summoners.service;
 using lol_check_scheduler.src.app.summoners.service.interfaces;
 using lol_check_scheduler.src.infrastructure.database;
 using lol_check_scheduler.src.infrastructure.firebase;
+using lol_check_scheduler.src.infrastructure.firebase.interfaces;
 using lol_check_scheduler.src.infrastructure.riotclient;
+using lol_check_scheduler.src.infrastructure.riotclient.interfaces;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -57,10 +59,10 @@ builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
 builder.Services.AddScoped<ISubscriberService, SubscriberService>();
 
 // RIOT_CLIENT_DI
-builder.Services.AddSingleton<RiotClient>();
+builder.Services.AddSingleton<IRiotClient, RiotClient>();
 
 // FCM_CLIENT_DI
-builder.Services.AddSingleton<FcmClient>();
+builder.Services.AddSingleton<IFcmClient, FcmClient>();
 
 // SCHEDULER_DI
 builder.Services.AddHostedService<CheckPlayingGameScheduler>();

@@ -13,19 +13,21 @@ namespace lol_check_scheduler.src.infrastructure.database.model
         public long Id { get; set; }
 
         [Required]
-        public String? Puuid { get; set; }
+        [Column("puuid")]
+        public string? Puuid { get; set; }
 
         [Required]
         [Column("game_name")]
-        public String? GameName { get; set; }
+        public string? GameName { get; set; }
 
         [Required]
         [Column("tag_line")]
-        public String? TagLine { get; set; }
+        public string? TagLine { get; set; }
 
-        public String? Introduce { get; set; }
+        [Column("introduce")]
+        public string? Introduce { get; set; }
 
         [Column("recent_game_id")]
-        public long RecentGameId { get; set; } = 0;
+        public long? RecentGameId { get; set; } = 0;
     }
 }

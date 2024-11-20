@@ -14,10 +14,10 @@ namespace lol_check_scheduler.src.infrastructure.database.model
 
         [Column("device_token")]
         [Required]
-        public required string DeviceToken { get; set; }
+        public string? DeviceToken { get; set; }
 
         [Column("user_id")]
         [Required]
-        public required long UserId { get; set; }
+        public long UserId { get; set; }
     }
 }
