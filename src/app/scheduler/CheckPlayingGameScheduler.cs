@@ -73,9 +73,10 @@ namespace lol_check_scheduler.src.app.scheduler
 
                 // 업데이트가 필요한 Summoner 목록을 전송합니다.
                 IEnumerable<Summoner> success = await SendMulticastMessageProcess(forUpdateSummoner, subscriberService, deviceService);
+
                 foreach (var summoner in success)
                 {
-                    await summonerService.UpdateSummoner(summoner); // Summoner 업데이트
+                    await summonerService.PatchSummoner(summoner);
                 }
             }
         }

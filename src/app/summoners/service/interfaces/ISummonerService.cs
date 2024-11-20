@@ -9,5 +9,6 @@ namespace lol_check_scheduler.src.app.summoners.service.interfaces
     {
         Task<IEnumerable<Summoner>> GetSummonersByTopN(int n);
         Task<Summoner> UpdateSummoner(Summoner summoner);
+        Task<Summoner> PatchSummoner(Summoner summoner);
     }
 }

@@ -7,6 +7,7 @@ namespace lol_check_scheduler.src.infrastructure.database
         Task<T?> FindByCondition(Expression<Func<T, bool>> expression);
         Task<T> Create(T entity);
         Task<T> Update(T entity);
+        Task<T> Patch(T entity);
         void Delete(T entity);
     }
 }
