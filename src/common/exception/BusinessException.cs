@@ -13,5 +13,10 @@ namespace lol_check_scheduler.src.common.exception
         {
             ErrorCode = errorCode;
         }
+
+        public BusinessException(IErrorCode errorCode, string message) : base(message)
+        {
+            ErrorCode = errorCode;
+        }
     }
 }

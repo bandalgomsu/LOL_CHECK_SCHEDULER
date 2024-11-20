@@ -18,7 +18,7 @@ namespace lol_check_scheduler.src.app.summoners.controller
         [HttpGet]
         public async Task<RiotClientData.GetPuuidResponse> Test()
         {
-            return await _riotClient.GetPuuid("1", "1");
+            return await _riotClient.GetPuuid("반달곰수", "KR1");
         }
     }
 }

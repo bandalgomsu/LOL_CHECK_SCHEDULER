@@ -20,14 +20,19 @@ namespace test.src.infrastructure.riotclient
             mockConfiguration.Setup(config => config["RiotApiKey"])
                 .Returns(DotEnv.Read(new DotEnvOptions(envFilePaths: ["../../../.env"]))["RIOT_API_KEY"]!);
 
-            _riotClient = new RiotClient(new HttpClient(), mockConfiguration.Object);
+            var mockHttpClientFactory = new Mock<IHttpClientFactory>();
+
+            mockHttpClientFactory.Setup(factory => factory.CreateClient(It.IsAny<string>()))
+                .Returns(new HttpClient());
+
+            _riotClient = new RiotClient(mockHttpClientFactory.Object, mockConfiguration.Object);
         }
 
         [Fact(DisplayName = "GET_PUUID_SUCCESS")]
         public async Task GET_PUUID_SUCCESS()
         {
-            var gameName = "1";
-            var tagLine = "1";
+            var gameName = "반달곰수";
+            var tagLine = "KR1";
 
             var response = await _riotClient.GetPuuid(gameName, tagLine);
 

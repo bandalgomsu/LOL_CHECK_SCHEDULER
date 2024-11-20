@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using dotenv.net;
@@ -14,14 +15,17 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
         private const string RIOT_CHECK_CURRENT_GAME_INFO_URL = "https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/";
 
         private readonly string _riotApiKey;
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
 
-        public RiotClient(HttpClient httpClient, IConfiguration configuration)
+        public RiotClient(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
             _configuration = configuration;
             _riotApiKey = _configuration["RiotApiKey"]!;
+
+            _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
         }
 
         public async Task<RiotClientData.GetPuuidResponse> GetPuuid(string gameName, string tagLine)
@@ -33,14 +37,11 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
             try
             {
                 response.EnsureSuccessStatusCode();
-
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-
-                return JsonSerializer.Deserialize<RiotClientData.GetPuuidResponse>(jsonResponse) ?? throw new Exception();
+                return await response.Content.ReadFromJsonAsync<RiotClientData.GetPuuidResponse>() ?? throw new Exception();
             }
             catch (Exception e)
             {
-                throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_SUMMONER_NOT_FOUND);
+                throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_SUMMONER_NOT_FOUND, e.Message);
             }
         }
 
