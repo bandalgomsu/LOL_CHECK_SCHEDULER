@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dotenv.net;
-using lol_check_scheduler.src.app.summoners.repository;
 using Xunit;
 
-namespace test.src.app.summoners
+namespace test.src.infrastructure.database
 {
-    public class SummonerRepositoryTest : IDisposable
+    public class DatabaseContextTest : IDisposable
     {
         private readonly DatabaseContext _databaseContext;
-        private readonly SummonerRepository _summonerRepository;
 
-        public SummonerRepositoryTest()
+        public DatabaseContextTest()
         {
-            var env = DotEnv.Read(new DotEnvOptions(overwriteExistingVars: true, envFilePaths: ["../../../../.env"]));
+            var env = DotEnv.Read(new DotEnvOptions(overwriteExistingVars: true, envFilePaths: ["../../../.env"]));
 
             var host = env["TEST_DB_HOST"];
             var name = $"lol_test_{Guid.NewGuid()}";
@@ -33,8 +31,6 @@ namespace test.src.app.summoners
             _databaseContext.Database.EnsureCreated();
             // _databaseContext.Database.Migrate();
 
-            _summonerRepository = new SummonerRepository(_databaseContext);
-
             for (int i = 0; i < 50; i++)
             {
                 var summoner = new Summoner
@@ -45,25 +41,23 @@ namespace test.src.app.summoners
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                 };
-
-                _summonerRepository.Create(summoner).Wait();
+                _databaseContext.Set<Summoner>().Add(summoner);
+                _databaseContext.SaveChanges();
             }
+        }
+
+        [Fact(DisplayName = "FIND_BY_ALL_SUCCESS")]
+        public async Task FIND_BY_ALL_SUCCESS()
+        {
+            var summoners = await _databaseContext.Set<Summoner>().ToListAsync();
+
+            Assert.Equal(50, summoners.Count());
         }
 
         public void Dispose()
         {
             _databaseContext.Database.EnsureDeleted();
             _databaseContext.Dispose();
-        }
-
-
-
-        [Fact(DisplayName = "FIND_ALL_BY_TOP_SUCCESS")]
-        public async Task FIND_ALL_BY_TOP_N_SUCCESS()
-        {
-            var summoners = await _summonerRepository.FindAllByTopN(20);
-
-            Assert.Equal(20, summoners.Count());
         }
     }
 }
