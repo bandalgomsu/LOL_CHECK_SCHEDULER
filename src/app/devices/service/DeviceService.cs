@@ -12,7 +12,7 @@ namespace lol_check_scheduler.src.app.devices.service
     {
         private readonly IDeviceRepository _deviceRepository = deviceRepository;
 
-        public async Task<IEnumerable<string>> GetDeviceTokensByUserIds(IEnumerable<long> userIds)
+        public async Task<IEnumerable<string?>> GetDeviceTokensByUserIds(IEnumerable<long> userIds)
         {
             var devices = await _deviceRepository.FindAllByCondition(device => userIds.Contains(device.UserId));
 

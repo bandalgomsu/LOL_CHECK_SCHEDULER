@@ -41,5 +41,18 @@ namespace test.src.infrastructure.riotclient
             Assert.NotNull(response.Puuid);
         }
 
+        [Fact(DisplayName = "GET_PUUID_FAILURE_THROW_BY_")]
+        public async Task GET_PUUID_SUCCESS()
+        {
+            var gameName = "반달곰수";
+            var tagLine = "KR1";
+
+            var response = await _riotClient.GetPuuid(gameName, tagLine);
+
+            Assert.Equal(gameName, response.GameName);
+            Assert.Equal(tagLine, response.TagLine);
+            Assert.NotNull(response.Puuid);
+        }
+
     }
 }

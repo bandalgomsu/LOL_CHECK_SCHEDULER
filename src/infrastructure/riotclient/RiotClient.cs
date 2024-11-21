@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Castle.Components.DictionaryAdapter.Xml;
 using dotenv.net;
 using lol_check_scheduler.src.common.exception;
 using lol_check_scheduler.src.infrastructure.riotclient.interfaces;
@@ -42,7 +44,16 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
             }
             catch (Exception e)
             {
-                throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_SUMMONER_NOT_FOUND, e.Message);
+                if (e is HttpRequestException && response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_SUMMONER_NOT_FOUND, e.Message);
+                }
+                else if (e is HttpRequestException)
+                {
+                    throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR, e.Message);
+                }
+
+                throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_INTERNAL_ERROR, e.Message);
             }
         }
 
@@ -59,12 +70,21 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<RiotClientData.CurrentGameInfo>(jsonResponse) ?? throw new Exception();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return new RiotClientData.CurrentGameInfo
+                if (e is HttpRequestException && response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    IsCurrentPlayingGame = false
-                };
+                    return new RiotClientData.CurrentGameInfo
+                    {
+                        IsCurrentPlayingGame = false
+                    };
+                }
+                else if (e is HttpRequestException)
+                {
+                    throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR, e.Message);
+                }
+
+                throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_INTERNAL_ERROR, e.Message);
             }
         }
     }
