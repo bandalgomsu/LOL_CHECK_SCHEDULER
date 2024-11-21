@@ -7,7 +7,6 @@ namespace lol_check_scheduler.src.infrastructure.firebase.interfaces
 {
     public interface IFcmClient
     {
-        Task SendMulticastMessage(FcmClientData.FmcMulticastMessage message, bool dryRun);
-        Task SendMulticastMessage(FcmClientData.FmcMulticastMessage message);
+        Task SendMulticastMessage(FcmClientData.FmcMulticastMessage message, bool dryRun = false);
     }
 }
