@@ -85,14 +85,14 @@ namespace lol_check_scheduler.src.app.scheduler
                     {
                         foreach (var summoner in success)
                         {
-                            await summonerService.PatchSummoner(summoner);
+                            await summonerService.PatchSummoner(summoner!);
                         }
                     }
                 );
             }
         }
 
-        private async Task<IEnumerable<Summoner?>> SendMulticastMessageProcess(IEnumerable<Summoner> forUpdateSummoner, ISubscriberService subscriberService, IDeviceService deviceService)
+        private async Task<IEnumerable<Summoner>> SendMulticastMessageProcess(IEnumerable<Summoner> forUpdateSummoner, ISubscriberService subscriberService, IDeviceService deviceService)
         {
             var tasks = forUpdateSummoner.Select(async summoner =>
             {
@@ -110,7 +110,7 @@ namespace lol_check_scheduler.src.app.scheduler
                 return summoner;
             });
 
-            return (await Task.WhenAll(tasks)).Where(summoner => summoner != null);
+            return (await Task.WhenAll(tasks)).Where(summoner => summoner != null)!;
         }
 
         private async Task<IEnumerable<string>> GetTokens(Summoner summoner, ISubscriberService subscriberService, IDeviceService deviceService)

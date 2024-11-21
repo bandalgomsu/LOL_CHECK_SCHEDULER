@@ -53,7 +53,7 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
                     throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR, e.Message);
                 }
 
-                throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_INTERNAL_ERROR, e.Message);
+                throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, e.Message);
             }
         }
 
@@ -84,7 +84,7 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
                     throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR, e.Message);
                 }
 
-                throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_INTERNAL_ERROR, e.Message);
+                throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, e.Message);
             }
         }
     }

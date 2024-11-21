@@ -11,7 +11,6 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
     {
         public static readonly RiotClientErrorCode RIOT_CLIENT_SUMMONER_NOT_FOUND = new RiotClientErrorCode("RC01", "RIOT_CLIENT_SUMMONER_NOT_FOUND", (int)HttpStatusCode.BadRequest);
         public static readonly RiotClientErrorCode RIOT_CLIENT_EXTERNAL_ERROR = new RiotClientErrorCode("RC02", "RIOT_CLIENT_EXTERNAL_ERROR", (int)HttpStatusCode.BadRequest);
-        public static readonly RiotClientErrorCode RIOT_CLIENT_INTERNAL_ERROR = new RiotClientErrorCode("RC03", "RIOT_CLIENT_INTERNAL_ERROR", (int)HttpStatusCode.BadRequest);
 
         public string Code { get; set; }
 
