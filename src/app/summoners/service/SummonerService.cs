@@ -22,7 +22,5 @@ namespace lol_check_scheduler.src.app.summoners.service
         {
             return await _summonerRepository.Update(summoner);
         }
-
-
     }
 }
