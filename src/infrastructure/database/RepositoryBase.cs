@@ -43,7 +43,7 @@ namespace lol_check_scheduler.src.infrastructure.database
 
             return entity;
         }
-        public async void Delete(T entity)
+        public async Task Delete(T entity)
         {
             databaseContext.Set<T>().Remove(entity);
             await databaseContext.SaveChangesAsync();

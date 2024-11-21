@@ -95,11 +95,11 @@ namespace test.src.app.scheduler
             var tokens = new List<string> { "TEST_TOKEN" };
 
             _deviceService.Setup(service => service.GetDeviceTokensByUserIds(It.IsAny<IEnumerable<long>>())).ReturnsAsync(tokens);
-            _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()));
+            _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>(), It.IsAny<bool>()));
 
             await _checkPlayingGameScheduler.CheckPlayingGameJob();
 
-            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Once);
+            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>(), It.IsAny<bool>()), Times.Once);
         }
 
         // S2 => 게임을 시작한 소환사 감지 X
@@ -172,7 +172,7 @@ namespace test.src.app.scheduler
 
             await _checkPlayingGameScheduler.CheckPlayingGameJob();
 
-            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Never);
+            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>(), It.IsAny<bool>()), Times.Never);
         }
 
         // S5 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재 , 구독자의 토큰이 존재하지 않음 
@@ -210,7 +210,7 @@ namespace test.src.app.scheduler
 
             await _checkPlayingGameScheduler.CheckPlayingGameJob();
 
-            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()), Times.Never);
+            _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>(), It.IsAny<bool>()), Times.Never);
         }
 
         // S6 => 게임을 시작한 소환사를 1명 이상 감지 , 해당 소환사의 최근 게임 ID가 진행중인 게임 ID와 다름 , 해당 소환사의 구독자 존재 , 구독자의 토큰이 존재 , 푸시 실패
@@ -246,10 +246,8 @@ namespace test.src.app.scheduler
             var tokens = new List<string> { "TEST_TOKEN" };
 
             _deviceService.Setup(service => service.GetDeviceTokensByUserIds(It.IsAny<IEnumerable<long>>())).ReturnsAsync(tokens);
-            _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>()))
+            _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>(), It.IsAny<bool>()))
                 .ThrowsAsync(new Exception());
-
-
 
             await Assert.ThrowsAsync<Exception>(async () => await _checkPlayingGameScheduler.CheckPlayingGameJob());
         }
