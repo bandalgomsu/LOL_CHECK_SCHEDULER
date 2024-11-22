@@ -37,9 +37,7 @@ namespace test.src.app.subscribers
                 var subscriber = new Subscriber
                 {
                     SummonerId = i,
-                    SubscriberId = i,
-                    SummonerGameName = "TEST_GAME_NAME",
-                    SummonerTagLine = "TEST_TAG_LINE",
+                    SubscriberId = 50,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                 };
@@ -58,10 +56,10 @@ namespace test.src.app.subscribers
             Assert.Equal(50, subscribers.Count());
         }
 
-        [Fact(DisplayName = "FIND_ALL_BY_CONDITION_SUMMONER_GAME_NAME_SUCCESS")]
-        public async Task FIND_ALL_BY_CONDITION_SUMMONER_GAME_NAME_SUCCESS()
+        [Fact(DisplayName = "FIND_ALL_BY_CONDITION_SUBSCRIBER_ID_SUCCESS")]
+        public async Task FIND_ALL_BY_CONDITION_SUBSCRIBER_ID_SUCCESS()
         {
-            var subscribers = await _repository.FindAllByCondition(subscriber => subscriber.SummonerGameName == "TEST_GAME_NAME");
+            var subscribers = await _repository.FindAllByCondition(subscriber => subscriber.SubscriberId == 50);
 
             Assert.Equal(50, subscribers.Count());
         }
@@ -81,8 +79,6 @@ namespace test.src.app.subscribers
             {
                 SummonerId = 51,
                 SubscriberId = 51,
-                SummonerGameName = "CREATE_GAME_NAME",
-                SummonerTagLine = "CREATE_TAG_LINE",
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
             };
@@ -98,26 +94,26 @@ namespace test.src.app.subscribers
         public async Task PATCH_SUCCESS()
         {
             var subscriber = await _repository.FindByCondition(subscriber => subscriber.Id == 1);
-            subscriber!.SummonerGameName = "PATCH";
+            subscriber!.SummonerId = 2;
 
             await _repository.Patch(subscriber);
 
             var updatedsubscriber = await _repository.FindByCondition(subscriber => subscriber.Id == 1);
 
-            Assert.Equal("PATCH", updatedsubscriber!.SummonerGameName);
+            Assert.Equal(2, updatedsubscriber!.SummonerId);
         }
 
         [Fact(DisplayName = "UPDATE_SUCCESS")]
         public async Task UPDATE_SUCCESS()
         {
             var subscriber = await _repository.FindByCondition(subscriber => subscriber.Id == 1);
-            subscriber!.SummonerGameName = "UPDATE";
+            subscriber!.SummonerId = 2;
 
             await _repository.Patch(subscriber);
 
             var updatedsubscriber = await _repository.FindByCondition(subscriber => subscriber.Id == 1);
 
-            Assert.Equal("UPDATE", updatedsubscriber!.SummonerGameName);
+            Assert.Equal(2, updatedsubscriber!.SummonerId);
         }
 
         [Fact(DisplayName = "DELETE_SUCCESS")]

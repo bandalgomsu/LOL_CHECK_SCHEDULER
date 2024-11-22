@@ -20,13 +20,5 @@ namespace lol_check_scheduler.src.infrastructure.database.model
         [Required]
         [Column("subscriber_id")]
         public long SubscriberId { get; set; }
-
-        [Required]
-        [Column("summoner_game_name")]
-        public string? SummonerGameName { get; set; }
-
-        [Required]
-        [Column("summoner_tag_line")]
-        public string? SummonerTagLine { get; set; }
     }
 }

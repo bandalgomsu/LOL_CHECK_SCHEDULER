@@ -85,8 +85,6 @@ namespace test.src.app.scheduler
                 Id = 1,
                 SummonerId = summoner.Id,
                 SubscriberId = 1,
-                SummonerGameName = summoner.GameName,
-                SummonerTagLine = summoner.TagLine,
             };
 
             _subscriberService.Setup(service => service.GetSubscribersBySummonerId(summoner.Id!)).ReturnsAsync(
@@ -198,8 +196,6 @@ namespace test.src.app.scheduler
                 Id = 1,
                 SummonerId = summoner.Id,
                 SubscriberId = 1,
-                SummonerGameName = summoner.GameName,
-                SummonerTagLine = summoner.TagLine,
             };
 
             _subscriberService.Setup(service => service.GetSubscribersBySummonerId(summoner.Id!)).ReturnsAsync(
@@ -236,8 +232,6 @@ namespace test.src.app.scheduler
                 Id = 1,
                 SummonerId = summoner.Id,
                 SubscriberId = 1,
-                SummonerGameName = summoner.GameName,
-                SummonerTagLine = summoner.TagLine,
             };
 
             _subscriberService.Setup(service => service.GetSubscribersBySummonerId(summoner.Id!)).ReturnsAsync(
