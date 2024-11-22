@@ -245,5 +245,6 @@ namespace test.src.app.scheduler
 
             await Assert.ThrowsAsync<Exception>(async () => await _checkPlayingGameScheduler.CheckPlayingGameJob());
         }
+
     }
 }

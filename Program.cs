@@ -19,7 +19,9 @@ using lol_check_scheduler.src.infrastructure.firebase;
 using lol_check_scheduler.src.infrastructure.firebase.interfaces;
 using lol_check_scheduler.src.infrastructure.riotclient;
 using lol_check_scheduler.src.infrastructure.riotclient.interfaces;
-using Microsoft.EntityFrameworkCore;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
 
 
 var env = DotEnv.Read();
@@ -65,7 +67,18 @@ builder.Services.AddSingleton<IRiotClient, RiotClient>();
 builder.Services.AddSingleton<IFcmClient, FcmClient>();
 
 // SCHEDULER_DI
-builder.Services.AddHostedService<CheckPlayingGameScheduler>();
+builder.Services.AddQuartz(q =>
+    {
+        var jobKey = new JobKey("CHECK_PLAYING_GAME_JOB");
+        q.AddJob<CheckPlayingGameScheduler>(opts => opts.WithIdentity(jobKey));
+        q.AddTrigger(opts => opts
+            .ForJob(jobKey)
+            .WithIdentity("CHECK_PLAYING_GAME")
+            .WithCronSchedule("1 * * * * ?"));
+    }
+);
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 var app = builder.Build();
 

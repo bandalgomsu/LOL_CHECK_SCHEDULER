@@ -10,10 +10,11 @@ using lol_check_scheduler.src.infrastructure.firebase;
 using lol_check_scheduler.src.infrastructure.firebase.interfaces;
 using lol_check_scheduler.src.infrastructure.riotclient;
 using lol_check_scheduler.src.infrastructure.riotclient.interfaces;
+using Quartz;
 
 namespace lol_check_scheduler.src.app.scheduler
 {
-    public class CheckPlayingGameScheduler : IHostedService, IDisposable
+    public class CheckPlayingGameScheduler : IJob
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IRiotClient _riotClient;
@@ -28,23 +29,9 @@ namespace lol_check_scheduler.src.app.scheduler
             _fcmClient = fcmClient;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task Execute(IJobExecutionContext context)
         {
-            // 1분마다 비동기 메서드를 실행하도록 타이머 설정
-            _timer = new Timer(ExecuteTaskAsync!, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
-            return Task.CompletedTask;
-        }
-
-        private async void ExecuteTaskAsync(object state)
-        {
-            try
-            {
-                await CheckPlayingGameJob();
-            }
-            catch (Exception)
-            {
-                // 예외 처리
-            }
+            await CheckPlayingGameJob();
         }
 
         public async Task CheckPlayingGameJob()
@@ -119,17 +106,6 @@ namespace lol_check_scheduler.src.app.scheduler
             var ids = subscribers.Select(subscriber => subscriber.Id);
 
             return await deviceService.GetDeviceTokensByUserIds(ids);
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            _timer?.Change(Timeout.Infinite, 0);
-            return Task.CompletedTask;
-        }
-
-        public void Dispose()
-        {
-            _timer?.Dispose();
         }
     }
 }
