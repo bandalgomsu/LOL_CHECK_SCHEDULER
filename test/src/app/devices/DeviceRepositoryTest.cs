@@ -8,12 +8,12 @@ using Xunit;
 
 namespace test.src.app.devices
 {
-    public class DeviceRepositoryBaseTest
+    public class DeviceRepositoryTest
     {
         private readonly DatabaseContext _databaseContext;
         private readonly DeviceRepository _repository;
 
-        public DeviceRepositoryBaseTest()
+        public DeviceRepositoryTest()
         {
             var env = DotEnv.Read(new DotEnvOptions(overwriteExistingVars: true, envFilePaths: ["../../../.env"]));
 
