@@ -8,7 +8,7 @@ using Xunit;
 
 namespace test.src.app.subscribers
 {
-    public class SubscriberRepositoryTest
+    public class SubscriberRepositoryTest : IDisposable
     {
         private readonly DatabaseContext _databaseContext;
         private readonly SubscriberRepository _repository;

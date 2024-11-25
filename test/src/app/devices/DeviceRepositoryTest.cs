@@ -8,7 +8,7 @@ using Xunit;
 
 namespace test.src.app.devices
 {
-    public class DeviceRepositoryTest
+    public class DeviceRepositoryTest : IDisposable
     {
         private readonly DatabaseContext _databaseContext;
         private readonly DeviceRepository _repository;

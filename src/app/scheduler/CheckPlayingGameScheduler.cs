@@ -20,8 +20,6 @@ namespace lol_check_scheduler.src.app.scheduler
         private readonly IRiotClient _riotClient;
         private readonly IFcmClient _fcmClient;
 
-        private Timer? _timer;
-
         public CheckPlayingGameScheduler(IServiceScopeFactory serviceScopeFactory, IRiotClient riotClient, IFcmClient fcmClient)
         {
             _serviceScopeFactory = serviceScopeFactory;
@@ -42,7 +40,6 @@ namespace lol_check_scheduler.src.app.scheduler
                 var deviceService = scope.ServiceProvider.GetRequiredService<IDeviceService>();
                 var subscriberService = scope.ServiceProvider.GetRequiredService<ISubscriberService>();
 
-                // Summoner 정보를 가져옵니다.
                 IEnumerable<Summoner> summoners = await summonerService.GetSummonersByTopN(49);
 
                 List<Summoner> forUpdateSummoner = new List<Summoner>();
@@ -65,7 +62,6 @@ namespace lol_check_scheduler.src.app.scheduler
                     return;
                 }
 
-                // 업데이트가 필요한 Summoner 목록을 전송합니다.
                 IEnumerable<Summoner> success = await SendMulticastMessageProcess(forUpdateSummoner, subscriberService, deviceService);
 
                 _ = Task.Run(async () =>
