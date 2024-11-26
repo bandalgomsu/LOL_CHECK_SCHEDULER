@@ -20,6 +20,7 @@ namespace lol_check_scheduler.src.app.scheduler
         private readonly IRiotClient _riotClient;
         private readonly IFcmClient _fcmClient;
 
+        private readonly ILogger<CheckPlayingGameScheduler> _logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<CheckPlayingGameScheduler>();
         public CheckPlayingGameScheduler(IServiceScopeFactory serviceScopeFactory, IRiotClient riotClient, IFcmClient fcmClient)
         {
             _serviceScopeFactory = serviceScopeFactory;
@@ -42,7 +43,7 @@ namespace lol_check_scheduler.src.app.scheduler
 
                 IEnumerable<Summoner> summoners = await summonerService.GetSummonersByTopN(49);
 
-                List<Summoner> forUpdateSummoner = new List<Summoner>();
+                List<Summoner> playingSummoners = new List<Summoner>();
 
                 IEnumerable<Task> tasks = summoners.Select(async summoner =>
                 {
@@ -51,18 +52,22 @@ namespace lol_check_scheduler.src.app.scheduler
                     if (currentGameInfo.IsCurrentPlayingGame && summoner.RecentGameId != currentGameInfo.GameId)
                     {
                         summoner.RecentGameId = currentGameInfo.GameId;
-                        forUpdateSummoner.Add(summoner);
+                        playingSummoners.Add(summoner);
                     }
                 });
 
                 await Task.WhenAll(tasks);
 
-                if (!forUpdateSummoner.Any())
+                if (!playingSummoners.Any())
                 {
                     return;
                 }
 
-                IEnumerable<Summoner> success = await SendMulticastMessageProcess(forUpdateSummoner, subscriberService, deviceService);
+                IEnumerable<Summoner> success = await SendMulticastMessageProcess(playingSummoners, subscriberService, deviceService);
+
+                _logger.LogInformation("TOTAL_COUNT : {}}", playingSummoners.Count());
+                _logger.LogInformation("SUCCESS_COUNT : {}}", success.Count());
+                _logger.LogInformation("FAILURE_COUNT : {}}", playingSummoners.Count() - success.Count());
 
                 _ = Task.Run(async () =>
                     {

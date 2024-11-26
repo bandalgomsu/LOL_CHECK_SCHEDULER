@@ -24,9 +24,15 @@ using Quartz.Impl;
 using Quartz.Spi;
 
 
-var env = DotEnv.Read();
+DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Logging.ClearProviders();
+    builder.Logging.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Warning);
+}
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -35,18 +41,24 @@ builder.Services.AddHttpClient();
 builder.Configuration.GetConnectionString("");
 
 // DB CONNECTION
-var host = env["DB_HOST"];
-var name = env["DB_NAME"];
-var username = env["DB_USERNAME"];
-var password = env["DB_PASSWORD"];
+// var host = env["DB_HOST"];
+// var name = env["DB_NAME"];
+// var username = env["DB_USERNAME"];
+// var password = env["DB_PASSWORD"];
 
-var connection = $"Server={host};Database={name};User={username};Password={password}";
+var host = Environment.GetEnvironmentVariable("DB_HOST");
+var name = Environment.GetEnvironmentVariable("DB_NAME");
+var username = Environment.GetEnvironmentVariable("DB_USERNAME");
+var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
+var port = Environment.GetEnvironmentVariable("DB_PORT");
+
+var connection = $"Server={host};Database={name};User={username};Password={password};Port={port};";
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseMySQL(connection)
 );
 
-builder.Configuration["RiotApiKey"] = env["RIOT_API_KEY"];
+builder.Configuration["RiotApiKey"] = Environment.GetEnvironmentVariable("RIOT_API_KEY");
 
 // SUMMONER DI
 builder.Services.AddScoped<ISummonerService, SummonerService>();
