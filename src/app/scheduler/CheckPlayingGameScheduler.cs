@@ -86,14 +86,12 @@ namespace lol_check_scheduler.src.app.scheduler
             {
                 IEnumerable<string> tokens = await GetTokens(summoner, subscriberService, deviceService);
 
-                if (!tokens.Any())
+                if (tokens.Any())
                 {
-                    return null;
+                    var message = FcmClientData.FmcMulticastMessage.CreateCheckedPlayingGameMessage(tokens, summoner);
+
+                    await _fcmClient.SendMulticastMessage(message);
                 }
-
-                var message = FcmClientData.FmcMulticastMessage.CreateCheckedPlayingGameMessage(tokens, summoner);
-
-                await _fcmClient.SendMulticastMessage(message);
 
                 return summoner;
             });
