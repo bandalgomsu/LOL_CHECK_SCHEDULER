@@ -21,7 +21,7 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
         public class CurrentGameInfo
         {
             [JsonPropertyName("gameId")]
-            public int GameId { get; set; } = 0;
+            public long GameId { get; set; } = 0;
 
             [JsonPropertyName("gameType")]
             public string? GameType { get; set; }
