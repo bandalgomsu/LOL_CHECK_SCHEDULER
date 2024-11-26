@@ -1,0 +1,47 @@
+name: CD_PROD
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions: write-all #테스트 결과 작성을 위해 쓰기권한 추가
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Create Fcm Key
+        id: Create_Fcm_Key
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "google-services.json"
+          json: ${{ secrets.FCM_KEY }}
+          dir: "/"
+
+      - name: Docker build & Push
+        run: |
+          docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }}/${{ secrets.SERVICE_NAME }} .
+          docker push ${{ secrets.DOCKER_REPO }}/${{ secrets.SERVICE_NAME }}
+
+      - name: Deploy to Prod
+        uses: appleboy/ssh-action@master
+        id: deploy-prod
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          envs: GITHUB_SHA
+          script: |
+            cd ./project
+            sudo docker stop ${{ secrets.SERVICE_NAME }}
+            sudo docker rm ${{ secrets.SERVICE_NAME }}
+            sudo docker rmi $(sudo docker images -q) 
+            sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ secrets.SERVICE_NAME }}
+            sudo docker run -i -t --env-file ./.env -p 8081:8081 -d -v /home/ubuntu/project/log:/apps/log --name ${{ secrets.SERVICE_NAME }} ${{ secrets.DOCKER_REPO }}/${{ secrets.SERVICE_NAME }}:latest
