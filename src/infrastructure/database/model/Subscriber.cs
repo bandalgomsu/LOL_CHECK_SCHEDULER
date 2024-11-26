@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace lol_check_scheduler.src.infrastructure.database.model
 {
-    [Table("Summoner_Subscriber")]
+    [Table("summoner_subscriber")]
     public class Subscriber : BaseEntity
     {
         [Key]
