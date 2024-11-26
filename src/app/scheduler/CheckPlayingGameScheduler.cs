@@ -104,7 +104,7 @@ namespace lol_check_scheduler.src.app.scheduler
         private async Task<IEnumerable<string>> GetTokens(Summoner summoner, ISubscriberService subscriberService, IDeviceService deviceService)
         {
             var subscribers = await subscriberService.GetSubscribersBySummonerId(summoner.Id!);
-            var ids = subscribers.Select(subscriber => subscriber.Id);
+            var ids = subscribers.Select(subscriber => subscriber.SubscriberId);
 
             return await deviceService.GetDeviceTokensByUserIds(ids);
         }
