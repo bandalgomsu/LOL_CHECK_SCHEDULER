@@ -32,6 +32,7 @@ if (!builder.Environment.IsDevelopment())
 {
     builder.Logging.ClearProviders();
     builder.Logging.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Warning);
+    builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
 }
 
 builder.Services.AddControllers();
@@ -39,12 +40,6 @@ builder.Services.AddOpenApi();
 builder.Services.AddHttpClient();
 
 builder.Configuration.GetConnectionString("");
-
-// DB CONNECTION
-// var host = env["DB_HOST"];
-// var name = env["DB_NAME"];
-// var username = env["DB_USERNAME"];
-// var password = env["DB_PASSWORD"];
 
 var host = Environment.GetEnvironmentVariable("DB_HOST");
 var name = Environment.GetEnvironmentVariable("DB_NAME");
