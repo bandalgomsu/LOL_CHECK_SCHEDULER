@@ -65,9 +65,9 @@ namespace lol_check_scheduler.src.app.scheduler
 
                 IEnumerable<Summoner> success = await SendMulticastMessageProcess(playingSummoners, subscriberService, deviceService);
 
-                _logger.LogInformation("TOTAL_COUNT : {}}", playingSummoners.Count());
-                _logger.LogInformation("SUCCESS_COUNT : {}}", success.Count());
-                _logger.LogInformation("FAILURE_COUNT : {}}", playingSummoners.Count() - success.Count());
+                _logger.LogInformation("TOTAL_COUNT : {}", playingSummoners.Count());
+                _logger.LogInformation("SUCCESS_COUNT : {}", success.Count());
+                _logger.LogInformation("FAILURE_COUNT : {}", playingSummoners.Count() - success.Count());
 
                 _ = Task.Run(async () =>
                     {

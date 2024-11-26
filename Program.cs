@@ -30,8 +30,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 if (!builder.Environment.IsDevelopment())
 {
-    builder.Logging.ClearProviders();
-    builder.Logging.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Warning);
+    // builder.Logging.ClearProviders();
+    // builder.Logging.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Warning);
     builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
 }
 
