@@ -14,13 +14,18 @@ namespace test.src.infrastructure.riotclient
     public class RiotClientTest
     {
         private readonly RiotClient _riotClient;
+        private readonly RiotClient _errorClient;
 
         public RiotClientTest()
         {
             var mockConfiguration = new Mock<IConfiguration>();
+            var errorMockConfiguration = new Mock<IConfiguration>();
 
             mockConfiguration.Setup(config => config["RiotApiKey"])
                 .Returns(DotEnv.Read(new DotEnvOptions(envFilePaths: ["../../../.env"]))["RIOT_API_KEY"]!);
+
+            errorMockConfiguration.Setup(config => config["RiotApiKey"])
+            .Returns("ERROR_RIOT_API_KEY");
 
             var mockHttpClientFactory = new Mock<IHttpClientFactory>();
 
@@ -28,6 +33,7 @@ namespace test.src.infrastructure.riotclient
                 .Returns(new HttpClient());
 
             _riotClient = new RiotClient(mockHttpClientFactory.Object, mockConfiguration.Object);
+            _errorClient = new RiotClient(mockHttpClientFactory.Object, errorMockConfiguration.Object);
         }
 
         [Fact(DisplayName = "GET_PUUID_SUCCESS")]
@@ -97,6 +103,17 @@ namespace test.src.infrastructure.riotclient
             var leagueList = await _riotClient.GetLeagueListInChallengerLeagues();
 
             Assert.True(leagueList.Entries.Count() > 0);
+            Assert.True(leagueList.Entries.First().SummonerId.Length > 0);
+        }
+
+        [Fact(DisplayName = "GET_LEAGUE_LIST_BY_CHALLENGER_LEAGUES_FAILURE_THROW_BY_RIOT_CLIENT_EXTERNAL_ERROR")]
+        public async Task GET_LEAGUE_LIST_BY_CHALLENGER_LEAGUES_FAILURE_THROW_BY_RIOT_CLIENT_EXTERNAL_ERROR()
+        {
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _errorClient.GetLeagueListInChallengerLeagues());
+
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Code, exception.ErrorCode.Code);
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Message, exception.ErrorCode.Message);
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Status, exception.ErrorCode.Status);
         }
 
         [Fact(DisplayName = "GET_LEAGUE_LIST_BY_GRANDMASTER_LEAGUES_SUCCESS")]
@@ -105,6 +122,17 @@ namespace test.src.infrastructure.riotclient
             var leagueList = await _riotClient.GetLeagueListInGrandMasterLeagues();
 
             Assert.True(leagueList.Entries.Count() > 0);
+            Assert.True(leagueList.Entries.First().SummonerId.Length > 0);
+        }
+
+        [Fact(DisplayName = "GET_LEAGUE_LIST_BY_GRANDMASTER_LEAGUES_FAILURE_THROW_BY_RIOT_CLIENT_EXTERNAL_ERROR")]
+        public async Task GET_LEAGUE_LIST_BY_GRANDMASTER_LEAGUES_FAILURE_THROW_BY_RIOT_CLIENT_EXTERNAL_ERROR()
+        {
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _errorClient.GetLeagueListInGrandMasterLeagues());
+
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Code, exception.ErrorCode.Code);
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Message, exception.ErrorCode.Message);
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Status, exception.ErrorCode.Status);
         }
 
         [Fact(DisplayName = "GET_LEAGUE_LIST_BY_MASTER_LEAGUES_SUCCESS")]
@@ -113,6 +141,17 @@ namespace test.src.infrastructure.riotclient
             var leagueList = await _riotClient.GetLeagueListInMasterLeagues();
 
             Assert.True(leagueList.Entries.Count() > 0);
+            Assert.True(leagueList.Entries.First().SummonerId.Length > 0);
+        }
+
+        [Fact(DisplayName = "GET_LEAGUE_LIST_BY_MASTER_LEAGUES_FAILURE_THROW_BY_RIOT_CLIENT_EXTERNAL_ERROR")]
+        public async Task GET_LEAGUE_LIST_BY_MASTER_LEAGUES_FAILURE_THROW_BY_RIOT_CLIENT_EXTERNAL_ERROR()
+        {
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _errorClient.GetLeagueListInMasterLeagues());
+
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Code, exception.ErrorCode.Code);
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Message, exception.ErrorCode.Message);
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Status, exception.ErrorCode.Status);
         }
     }
 }
