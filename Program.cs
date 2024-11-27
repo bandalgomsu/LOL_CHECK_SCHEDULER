@@ -56,16 +56,16 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 builder.Configuration["RiotApiKey"] = Environment.GetEnvironmentVariable("RIOT_API_KEY");
 
 // SUMMONER DI
-builder.Services.AddScoped<ISummonerService, SummonerService>();
-builder.Services.AddScoped<ISummonerRepository, SummonerRepository>();
+builder.Services.AddSingleton<ISummonerService, SummonerService>();
+builder.Services.AddSingleton<ISummonerRepository, SummonerRepository>();
 
 // DEVICE DI
-builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
-builder.Services.AddScoped<IDeviceService, DeviceService>();
+builder.Services.AddSingleton<IDeviceRepository, DeviceRepository>();
+builder.Services.AddSingleton<IDeviceService, DeviceService>();
 
 //SUBSCRIBER DI 
-builder.Services.AddScoped<ISubscriberRepository, SubscriberRepository>();
-builder.Services.AddScoped<ISubscriberService, SubscriberService>();
+builder.Services.AddSingleton<ISubscriberRepository, SubscriberRepository>();
+builder.Services.AddSingleton<ISubscriberService, SubscriberService>();
 
 // RIOT_CLIENT_DI
 builder.Services.AddSingleton<IRiotClient, RiotClient>();

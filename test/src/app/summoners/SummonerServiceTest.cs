@@ -24,8 +24,7 @@ namespace test.src.app.summoners
         public async Task GET_SUMMONERS_BY_TOP_N_SUCCESS()
         {
             _summonerRepository.Setup(repo => repo.FindAllByTopN(2))
-                .ReturnsAsync([new Summoner {
-                 }, new Summoner { }]);
+                .ReturnsAsync([new Summoner { }, new Summoner { }]);
 
             var response = await _summonerService.GetSummonersByTopN(2);
 

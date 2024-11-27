@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dotenv.net;
+using Moq;
 using Xunit;
 
 namespace test.src.infrastructure.database
 {
     public class TestRepository : RepositoryBase<Summoner>
     {
-        public TestRepository(DatabaseContext databaseContext) : base(databaseContext)
+        public TestRepository(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
         {
         }
     }
@@ -18,6 +19,9 @@ namespace test.src.infrastructure.database
     {
         private readonly DatabaseContext _databaseContext;
         private readonly RepositoryBase<Summoner> _repositoryBase;
+        private readonly Mock<IServiceScopeFactory> _serviceScopeFactory = new Mock<IServiceScopeFactory>();
+        private readonly Mock<IServiceScope> _serviceScope = new Mock<IServiceScope>();
+        private readonly Mock<IServiceProvider> _serviceProvider = new Mock<IServiceProvider>();
 
         public RepositoryBaseTest()
         {
@@ -52,7 +56,14 @@ namespace test.src.infrastructure.database
                 _databaseContext.Set<Summoner>().Add(summoner);
                 _databaseContext.SaveChanges();
             }
-            _repositoryBase = new TestRepository(_databaseContext);
+
+            _serviceProvider.Setup(provider => provider.GetService(typeof(DatabaseContext))).Returns(_databaseContext);
+            _serviceScope.SetupGet(scope => scope.ServiceProvider).Returns(_serviceProvider.Object);
+
+            var asyncServiceScope = new AsyncServiceScope(_serviceScope.Object);
+            _serviceScopeFactory.Setup(factory => factory.CreateScope()).Returns(_serviceScope.Object);
+
+            _repositoryBase = new TestRepository(_serviceScopeFactory.Object);
         }
 
         [Fact(DisplayName = "FIND_ALL_SUCCESS")]

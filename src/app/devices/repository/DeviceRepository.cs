@@ -6,7 +6,7 @@ using lol_check_scheduler.src.app.devices.repository.interfaces;
 
 namespace lol_check_scheduler.src.app.devices.repository
 {
-    public class DeviceRepository(DatabaseContext databaseContext) : RepositoryBase<Device>(databaseContext), IDeviceRepository
+    public class DeviceRepository(IServiceScopeFactory serviceScopeFactory) : RepositoryBase<Device>(serviceScopeFactory), IDeviceRepository
     {
     }
 }

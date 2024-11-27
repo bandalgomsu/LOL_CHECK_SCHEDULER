@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using dotenv.net;
 using lol_check_scheduler.src.app.devices.repository;
+using Moq;
 using Xunit;
 
 namespace test.src.app.devices
@@ -12,6 +13,10 @@ namespace test.src.app.devices
     {
         private readonly DatabaseContext _databaseContext;
         private readonly DeviceRepository _repository;
+
+        private readonly Mock<IServiceScopeFactory> _serviceScopeFactory = new Mock<IServiceScopeFactory>();
+        private readonly Mock<IServiceScope> _serviceScope = new Mock<IServiceScope>();
+        private readonly Mock<IServiceProvider> _serviceProvider = new Mock<IServiceProvider>();
 
         public DeviceRepositoryTest()
         {
@@ -45,7 +50,14 @@ namespace test.src.app.devices
                 _databaseContext.Set<Device>().Add(device);
                 _databaseContext.SaveChanges();
             }
-            _repository = new DeviceRepository(_databaseContext);
+
+            _serviceProvider.Setup(provider => provider.GetService(typeof(DatabaseContext))).Returns(_databaseContext);
+            _serviceScope.SetupGet(scope => scope.ServiceProvider).Returns(_serviceProvider.Object);
+
+            var asyncServiceScope = new AsyncServiceScope(_serviceScope.Object);
+            _serviceScopeFactory.Setup(factory => factory.CreateScope()).Returns(_serviceScope.Object);
+
+            _repository = new DeviceRepository(_serviceScopeFactory.Object);
         }
 
         [Fact(DisplayName = "FIND_ALL_SUCCESS")]

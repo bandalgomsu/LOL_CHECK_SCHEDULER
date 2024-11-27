@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using dotenv.net;
 using lol_check_scheduler.src.app.summoners.repository;
+using Moq;
 using Xunit;
 
 namespace test.src.app.summoners
@@ -12,6 +13,10 @@ namespace test.src.app.summoners
     {
         private readonly DatabaseContext _databaseContext;
         private readonly SummonerRepository _summonerRepository;
+
+        private readonly Mock<IServiceScopeFactory> _serviceScopeFactory = new Mock<IServiceScopeFactory>();
+        private readonly Mock<IServiceScope> _serviceScope = new Mock<IServiceScope>();
+        private readonly Mock<IServiceProvider> _serviceProvider = new Mock<IServiceProvider>();
 
         public SummonerRepositoryTest()
         {
@@ -33,7 +38,13 @@ namespace test.src.app.summoners
             _databaseContext.Database.EnsureCreated();
             // _databaseContext.Database.Migrate();
 
-            _summonerRepository = new SummonerRepository(_databaseContext);
+            _serviceProvider.Setup(provider => provider.GetService(typeof(DatabaseContext))).Returns(_databaseContext);
+            _serviceScope.SetupGet(scope => scope.ServiceProvider).Returns(_serviceProvider.Object);
+
+            var asyncServiceScope = new AsyncServiceScope(_serviceScope.Object);
+            _serviceScopeFactory.Setup(factory => factory.CreateScope()).Returns(_serviceScope.Object);
+
+            _summonerRepository = new SummonerRepository(_serviceScopeFactory.Object);
 
             for (int i = 0; i < 50; i++)
             {

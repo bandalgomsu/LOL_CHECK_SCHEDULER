@@ -4,3 +4,4 @@ global using lol_check_scheduler.src.infrastructure.database;
 global using lol_check_scheduler.src.infrastructure.database.model;
 global using System.Linq.Expressions;
 global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;

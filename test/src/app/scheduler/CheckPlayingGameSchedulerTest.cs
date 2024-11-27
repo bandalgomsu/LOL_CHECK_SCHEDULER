@@ -32,25 +32,13 @@ namespace test.src.app.scheduler
 
         public CheckPlayingGameSchedulerTest()
         {
-            var mockServiceProvider = new Mock<IServiceProvider>();
-
-            mockServiceProvider
-                .Setup(provider => provider.GetService(typeof(ISummonerService)))
-                .Returns(_summonerService.Object);
-
-            mockServiceProvider
-                .Setup(provider => provider.GetService(typeof(IDeviceService)))
-                .Returns(_deviceService.Object);
-
-            mockServiceProvider
-                .Setup(provider => provider.GetService(typeof(ISubscriberService)))
-                .Returns(_subscriberService.Object);
-
-
-            _serviceScope.Setup(scope => scope.ServiceProvider).Returns(mockServiceProvider.Object);
-            _serviceScopeFactory.Setup(factory => factory.CreateScope()).Returns(_serviceScope.Object);
-
-            _checkPlayingGameScheduler = new CheckPlayingGameScheduler(_serviceScopeFactory.Object, _riotClient.Object, _fcmClient.Object);
+            _checkPlayingGameScheduler = new CheckPlayingGameScheduler(
+                riotClient: _riotClient.Object,
+                fcmClient: _fcmClient.Object,
+                summonerService: _summonerService.Object,
+                deviceService: _deviceService.Object,
+                subscriberService: _subscriberService.Object
+            );
         }
 
         /**
