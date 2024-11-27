@@ -31,7 +31,7 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
             _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
         }
 
-        public async Task<RiotClientData.GetSummonerAccountInfoResponse> GetPuuid(string gameName, string tagLine)
+        public async Task<RiotClientData.GetSummonerAccountInfoResponse> GetSummonerAccountInfoByGameNameAndTagLine(string gameName, string tagLine)
         {
             var url = $"https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}?api_key={_riotApiKey}";
 
@@ -183,5 +183,7 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
                 throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, e.Message);
             }
         }
+
+
     }
 }

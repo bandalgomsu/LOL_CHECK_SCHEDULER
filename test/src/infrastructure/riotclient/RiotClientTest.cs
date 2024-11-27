@@ -36,38 +36,38 @@ namespace test.src.infrastructure.riotclient
             _errorClient = new RiotClient(mockHttpClientFactory.Object, errorMockConfiguration.Object);
         }
 
-        [Fact(DisplayName = "GET_PUUID_SUCCESS")]
+        [Fact(DisplayName = "GET_SUMMONER_ACCOUNT_INFO_SUCCESS")]
         public async Task GET_PUUID_SUCCESS()
         {
             var gameName = "반달곰수";
             var tagLine = "KR1";
 
-            var response = await _riotClient.GetPuuid(gameName, tagLine);
+            var response = await _riotClient.GetSummonerAccountInfoByGameNameAndTagLine(gameName, tagLine);
 
             Assert.Equal(gameName, response.GameName);
             Assert.Equal(tagLine, response.TagLine);
             Assert.NotNull(response.Puuid);
         }
 
-        [Fact(DisplayName = "GET_PUUID_FAILURE_THROW_BY_NOT_FOUND_SUMMONER")]
+        [Fact(DisplayName = "GET_SUMMONER_ACCOUNT_INFO_FAILURE_THROW_BY_NOT_FOUND_SUMMONER")]
         public async Task GET_PUUID_FAILURE_THROW_BY_NOT_FOUND_SUMMONER()
         {
             var gameName = "asd반달asd";
             var tagLine = "KR1";
 
-            var exception = await Assert.ThrowsAnyAsync<BusinessException>(() => _riotClient.GetPuuid(gameName, tagLine));
+            var exception = await Assert.ThrowsAnyAsync<BusinessException>(() => _riotClient.GetSummonerAccountInfoByGameNameAndTagLine(gameName, tagLine));
 
             Assert.Equal("RC01", exception.ErrorCode.Code);
             Assert.Equal("RIOT_CLIENT_SUMMONER_NOT_FOUND", exception.ErrorCode.Message);
         }
 
-        [Fact(DisplayName = "GET_PUUID_FAILURE_THROW_BY_EXTERNAL_ERROR")]
+        [Fact(DisplayName = "GET_SUMMONER_ACCOUNT_INFO_FAILURE_THROW_BY_EXTERNAL_ERROR")]
         public async Task GET_PUUID_FAILURE_THROW_BY_EXTERNAL_ERROR()
         {
             var gameName = "asd반달as!@$!@$!@$!@$!@$!@$@!%!@%!@#!@#!@#!@#!@$!@#!d";
             var tagLine = "KR1";
 
-            var exception = await Assert.ThrowsAnyAsync<BusinessException>(() => _riotClient.GetPuuid(gameName, tagLine));
+            var exception = await Assert.ThrowsAnyAsync<BusinessException>(() => _riotClient.GetSummonerAccountInfoByGameNameAndTagLine(gameName, tagLine));
 
             Assert.Equal("RC02", exception.ErrorCode.Code);
             Assert.Equal("RIOT_CLIENT_EXTERNAL_ERROR", exception.ErrorCode.Message);
@@ -79,7 +79,7 @@ namespace test.src.infrastructure.riotclient
             var gameName = "반달곰수";
             var tagLine = "KR1";
 
-            var puuid = (await _riotClient.GetPuuid(gameName, tagLine)).Puuid;
+            var puuid = (await _riotClient.GetSummonerAccountInfoByGameNameAndTagLine(gameName, tagLine)).Puuid;
 
             var response = await _riotClient.GetCurrentGameInfo(puuid);
 
@@ -160,7 +160,7 @@ namespace test.src.infrastructure.riotclient
             var summonerId = "lQ22_kXpjvoxrG2Sd99YrDxulZiubI5f_hchP49SwqpsIg";
 
             var summonerInfo = await _riotClient.GetSummonerInfoBySummonerId(summonerId);
-            var summonerAccountInfo = await _riotClient.GetPuuid("반달곰수", "KR1");
+            var summonerAccountInfo = await _riotClient.GetSummonerAccountInfoByGameNameAndTagLine("반달곰수", "KR1");
 
             Assert.True(summonerInfo.Puuid == summonerAccountInfo.Puuid);
         }

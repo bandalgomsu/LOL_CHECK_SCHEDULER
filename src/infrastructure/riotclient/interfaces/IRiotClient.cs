@@ -2,7 +2,9 @@ namespace lol_check_scheduler.src.infrastructure.riotclient.interfaces
 {
     public interface IRiotClient
     {
-        Task<RiotClientData.GetSummonerAccountInfoResponse> GetPuuid(string gameName, string tagLine);
+        Task<RiotClientData.GetSummonerAccountInfoResponse> GetSummonerAccountInfoByGameNameAndTagLine(string gameName, string tagLine);
+        Task<RiotClientData.GetSummonerAccountInfoResponse> GetSummonerAccountInfoBySummonerId(string summonerId);
+
         Task<RiotClientData.CurrentGameInfo> GetCurrentGameInfo(string puuid);
 
         Task<RiotClientData.LeagueListDTO> GetLeagueListInChallengerLeagues();
