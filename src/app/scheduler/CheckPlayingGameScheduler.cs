@@ -60,14 +60,7 @@ namespace lol_check_scheduler.src.app.scheduler
             _logger.LogInformation("SUCCESS_COUNT : {}", success.Count());
             _logger.LogInformation("FAILURE_COUNT : {}", playingSummoners.Count() - success.Count());
 
-            _ = Task.Run(async () =>
-                {
-                    foreach (var summoner in success)
-                    {
-                        await summonerService.PatchSummoner(summoner!);
-                    }
-                }
-            );
+            _ = PatchSuccessSummoners(success);
         }
 
         private async Task<IEnumerable<Summoner>> SendMulticastMessageProcess(IEnumerable<Summoner> forUpdateSummoner)
@@ -95,6 +88,14 @@ namespace lol_check_scheduler.src.app.scheduler
             var ids = subscribers.Select(subscriber => subscriber.SubscriberId);
 
             return await deviceService.GetDeviceTokensByUserIds(ids);
+        }
+
+        private async Task PatchSuccessSummoners(IEnumerable<Summoner> success)
+        {
+            foreach (var summoner in success)
+            {
+                await summonerService.PatchSummoner(summoner);
+            }
         }
     }
 }

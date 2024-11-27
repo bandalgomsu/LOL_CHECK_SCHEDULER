@@ -54,6 +54,8 @@ namespace lol_check_scheduler.src.infrastructure.database
             {
                 var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
 
+                databaseContext.Set<T>().Entry(entity).State = EntityState.Modified;
+
                 await databaseContext.SaveChangesAsync();
 
                 return entity;
@@ -66,7 +68,6 @@ namespace lol_check_scheduler.src.infrastructure.database
             {
                 var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
 
-                databaseContext.Set<T>().Attach(entity);
                 databaseContext.Set<T>().Update(entity);
                 await databaseContext.SaveChangesAsync();
 
