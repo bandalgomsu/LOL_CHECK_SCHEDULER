@@ -12,9 +12,9 @@ using lol_check_scheduler.src.infrastructure.riotclient;
 using lol_check_scheduler.src.infrastructure.riotclient.interfaces;
 using Quartz;
 
-namespace lol_check_scheduler.src.app.scheduler
+namespace lol_check_scheduler.src.app.job
 {
-    public class CheckPlayingGameScheduler(
+    public class CheckPlayingGameJob(
         IRiotClient riotClient,
         IFcmClient fcmClient,
         ISummonerService summonerService,
@@ -23,14 +23,14 @@ namespace lol_check_scheduler.src.app.scheduler
         ) : IJob
     {
 
-        private readonly ILogger<CheckPlayingGameScheduler> _logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<CheckPlayingGameScheduler>();
+        private readonly ILogger<CheckPlayingGameJob> _logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<CheckPlayingGameJob>();
 
         public async Task Execute(IJobExecutionContext context)
         {
-            await CheckPlayingGameJob();
+            await CheckPlayingGame();
         }
 
-        public async Task CheckPlayingGameJob()
+        public async Task CheckPlayingGame()
         {
             IEnumerable<Summoner> summoners = await summonerService.GetSummonersByTopN(49);
 

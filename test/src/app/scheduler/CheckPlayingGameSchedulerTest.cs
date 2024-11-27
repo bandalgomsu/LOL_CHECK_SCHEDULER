@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using lol_check_scheduler.src.app.devices.service.interfaces;
-using lol_check_scheduler.src.app.scheduler;
+using lol_check_scheduler.src.app.job;
 using lol_check_scheduler.src.app.subscribers.service.interfaces;
 using lol_check_scheduler.src.app.summoners.service.interfaces;
 using lol_check_scheduler.src.infrastructure.firebase;
@@ -28,11 +28,11 @@ namespace test.src.app.scheduler
         private readonly Mock<IDeviceService> _deviceService = new Mock<IDeviceService>();
         private readonly Mock<ISubscriberService> _subscriberService = new Mock<ISubscriberService>();
 
-        private readonly CheckPlayingGameScheduler _checkPlayingGameScheduler;
+        private readonly CheckPlayingGameJob _checkPlayingGameScheduler;
 
         public CheckPlayingGameSchedulerTest()
         {
-            _checkPlayingGameScheduler = new CheckPlayingGameScheduler(
+            _checkPlayingGameScheduler = new CheckPlayingGameJob(
                 riotClient: _riotClient.Object,
                 fcmClient: _fcmClient.Object,
                 summonerService: _summonerService.Object,
@@ -83,7 +83,7 @@ namespace test.src.app.scheduler
             _deviceService.Setup(service => service.GetDeviceTokensByUserIds(It.IsAny<IEnumerable<long>>())).ReturnsAsync(tokens);
             _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>(), It.IsAny<bool>()));
 
-            await _checkPlayingGameScheduler.CheckPlayingGameJob();
+            await _checkPlayingGameScheduler.CheckPlayingGame();
 
             _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>(), It.IsAny<bool>()), Times.Once);
         }
@@ -106,7 +106,7 @@ namespace test.src.app.scheduler
                 new RiotClientData.CurrentGameInfo { IsCurrentPlayingGame = false }
             );
 
-            await _checkPlayingGameScheduler.CheckPlayingGameJob();
+            await _checkPlayingGameScheduler.CheckPlayingGame();
 
             _subscriberService.Verify(service => service.GetSubscribersBySummonerId(It.IsAny<long>()), Times.Never);
         }
@@ -129,7 +129,7 @@ namespace test.src.app.scheduler
                 new RiotClientData.CurrentGameInfo { GameId = 1 }
             );
 
-            await _checkPlayingGameScheduler.CheckPlayingGameJob();
+            await _checkPlayingGameScheduler.CheckPlayingGame();
 
             _subscriberService.Verify(service => service.GetSubscribersBySummonerId(It.IsAny<long>()), Times.Never);
         }
@@ -156,7 +156,7 @@ namespace test.src.app.scheduler
                 []
             );
 
-            await _checkPlayingGameScheduler.CheckPlayingGameJob();
+            await _checkPlayingGameScheduler.CheckPlayingGame();
 
             _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>(), It.IsAny<bool>()), Times.Never);
         }
@@ -192,7 +192,7 @@ namespace test.src.app.scheduler
 
             _deviceService.Setup(service => service.GetDeviceTokensByUserIds(It.IsAny<IEnumerable<long>>())).ReturnsAsync([]);
 
-            await _checkPlayingGameScheduler.CheckPlayingGameJob();
+            await _checkPlayingGameScheduler.CheckPlayingGame();
 
             _fcmClient.Verify(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>(), It.IsAny<bool>()), Times.Never);
         }
@@ -231,7 +231,7 @@ namespace test.src.app.scheduler
             _fcmClient.Setup(client => client.SendMulticastMessage(It.IsAny<FcmClientData.FmcMulticastMessage>(), It.IsAny<bool>()))
                 .ThrowsAsync(new Exception());
 
-            await Assert.ThrowsAsync<Exception>(async () => await _checkPlayingGameScheduler.CheckPlayingGameJob());
+            await Assert.ThrowsAsync<Exception>(async () => await _checkPlayingGameScheduler.CheckPlayingGame());
         }
 
     }

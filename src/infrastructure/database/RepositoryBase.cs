@@ -9,22 +9,18 @@ namespace lol_check_scheduler.src.infrastructure.database
         }
         public async Task<IEnumerable<T>> FindAll()
         {
-            await using (var scope = _serviceScopeFactory.CreateAsyncScope())
-            {
-                var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
+            var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
 
-                return await databaseContext.Set<T>().ToListAsync();
-            }
+            return await databaseContext.Set<T>().ToListAsync();
         }
 
         public async Task<IEnumerable<T>> FindAllByCondition(Expression<Func<T, bool>> expression)
         {
-            await using (var scope = _serviceScopeFactory.CreateAsyncScope())
-            {
-                var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
+            var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
 
-                return await databaseContext.Set<T>().Where(expression).ToListAsync();
-            }
+            return await databaseContext.Set<T>().Where(expression).ToListAsync();
         }
 
         public async Task<T?> FindByCondition(Expression<Func<T, bool>> expression)
@@ -38,28 +34,24 @@ namespace lol_check_scheduler.src.infrastructure.database
         }
         public async Task<T> Create(T entity)
         {
-            await using (var scope = _serviceScopeFactory.CreateAsyncScope())
-            {
-                var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
+            var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
 
-                await databaseContext.Set<T>().AddAsync(entity);
-                await databaseContext.SaveChangesAsync();
-                return entity;
-            }
+            await databaseContext.Set<T>().AddAsync(entity);
+            await databaseContext.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<T> Patch(T entity)
         {
-            await using (var scope = _serviceScopeFactory.CreateAsyncScope())
-            {
-                var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
+            var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
 
-                databaseContext.Set<T>().Entry(entity).State = EntityState.Modified;
+            databaseContext.Set<T>().Entry(entity).State = EntityState.Modified;
 
-                await databaseContext.SaveChangesAsync();
+            await databaseContext.SaveChangesAsync();
 
-                return entity;
-            }
+            return entity;
         }
 
         public async Task<T> Update(T entity)
@@ -76,13 +68,11 @@ namespace lol_check_scheduler.src.infrastructure.database
         }
         public async Task Delete(T entity)
         {
-            await using (var scope = _serviceScopeFactory.CreateAsyncScope())
-            {
-                var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
+            await using var scope = _serviceScopeFactory.CreateAsyncScope();
+            var databaseContext = scope.ServiceProvider.GetService<DatabaseContext>()!;
 
-                databaseContext.Set<T>().Remove(entity);
-                await databaseContext.SaveChangesAsync();
-            }
+            databaseContext.Set<T>().Remove(entity);
+            await databaseContext.SaveChangesAsync();
         }
     }
 }

@@ -5,7 +5,7 @@ using lol_check_scheduler.src.app.devices.repository;
 using lol_check_scheduler.src.app.devices.repository.interfaces;
 using lol_check_scheduler.src.app.devices.service;
 using lol_check_scheduler.src.app.devices.service.interfaces;
-using lol_check_scheduler.src.app.scheduler;
+using lol_check_scheduler.src.app.job;
 using lol_check_scheduler.src.app.subscribers.repository;
 using lol_check_scheduler.src.app.subscribers.repository.interfaces;
 using lol_check_scheduler.src.app.subscribers.service;
@@ -77,7 +77,7 @@ builder.Services.AddSingleton<IFcmClient, FcmClient>();
 builder.Services.AddQuartz(q =>
     {
         var jobKey = new JobKey("CHECK_PLAYING_GAME_JOB");
-        q.AddJob<CheckPlayingGameScheduler>(opts => opts.WithIdentity(jobKey));
+        q.AddJob<CheckPlayingGameJob>(opts => opts.WithIdentity(jobKey));
         q.AddTrigger(opts => opts
             .ForJob(jobKey)
             .WithIdentity("CHECK_PLAYING_GAME")
