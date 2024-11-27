@@ -153,5 +153,28 @@ namespace test.src.infrastructure.riotclient
             Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Message, exception.ErrorCode.Message);
             Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Status, exception.ErrorCode.Status);
         }
+
+        [Fact(DisplayName = "GET_SUMMONER_INFO_BY_SUMMONER_ID_SUCCESS")]
+        public async Task GET_SUMMONER_INFO_BY_SUMMONER_ID_SUCCESS()
+        {
+            var summonerId = "lQ22_kXpjvoxrG2Sd99YrDxulZiubI5f_hchP49SwqpsIg";
+
+            var summonerInfo = await _riotClient.GetSummonerInfoBySummonerId(summonerId);
+            var summonerAccountInfo = await _riotClient.GetPuuid("반달곰수", "KR1");
+
+            Assert.True(summonerInfo.Puuid == summonerAccountInfo.Puuid);
+        }
+
+        [Fact(DisplayName = "GET_SUMMONER_INFO_BY_SUMMONER_ID_FAILURE_THROW_BY_SUMMONER_NOT_FOUND")]
+        public async Task GET_SUMMONER_INFO_BY_SUMMONER_ID_FAILURE_THROW_BY_SUMMONER_NOT_FOUND()
+        {
+            var summonerId = "lQ22_kXpjvoxrG2Sd99YrDxulZiubI5f_hchP49Swqp11g";
+
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _riotClient.GetSummonerInfoBySummonerId(summonerId));
+
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Code, exception.ErrorCode.Code);
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Message, exception.ErrorCode.Message);
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Status, exception.ErrorCode.Status);
+        }
     }
 }

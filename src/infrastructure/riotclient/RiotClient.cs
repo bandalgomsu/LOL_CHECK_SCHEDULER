@@ -31,7 +31,7 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
             _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
         }
 
-        public async Task<RiotClientData.GetPuuidResponse> GetPuuid(string gameName, string tagLine)
+        public async Task<RiotClientData.GetSummonerAccountInfoResponse> GetPuuid(string gameName, string tagLine)
         {
             var url = $"https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}?api_key={_riotApiKey}";
 
@@ -40,7 +40,7 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
             try
             {
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadFromJsonAsync<RiotClientData.GetPuuidResponse>() ?? throw new Exception();
+                return await response.Content.ReadFromJsonAsync<RiotClientData.GetSummonerAccountInfoResponse>() ?? throw new Exception();
             }
             catch (Exception e)
             {
@@ -148,6 +148,30 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<RiotClientData.LeagueListDTO>(jsonResponse) ?? throw new Exception();
+            }
+            catch (Exception e)
+            {
+                if (e is HttpRequestException)
+                {
+                    throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR, e.Message);
+                }
+
+                throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, e.Message);
+            }
+        }
+
+        public async Task<RiotClientData.GetSummonerInfoResponse> GetSummonerInfoBySummonerId(string summonerId)
+        {
+            var url = $"https://kr.api.riotgames.com/lol/summoner/v4/summoners/{summonerId}?api_key={_riotApiKey}";
+
+            var response = await _httpClient.GetAsync(url);
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<RiotClientData.GetSummonerInfoResponse>(jsonResponse) ?? throw new Exception();
             }
             catch (Exception e)
             {

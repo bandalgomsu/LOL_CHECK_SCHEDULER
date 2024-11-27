@@ -8,7 +8,7 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
 {
     public class RiotClientData
     {
-        public class GetPuuidResponse
+        public class GetSummonerAccountInfoResponse
         {
             [JsonPropertyName("puuid")]
             public required string Puuid { get; set; }
@@ -42,6 +42,12 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
         {
             [JsonPropertyName("summonerId")]
             public required string SummonerId { get; set; }
+        }
+
+        public class GetSummonerInfoResponse
+        {
+            [JsonPropertyName("puuid")]
+            public required string Puuid { get; set; }
         }
     }
 }

@@ -21,7 +21,9 @@ namespace lol_check_scheduler.src.app.job
 
         public async Task WarmUpChallengerSummoners()
         {
+            // var leagueList = await riotClient.GetLeagueListInChallengerLeagues();
 
+            // leagueList.Entries.Select(entry => )
         }
     }
 }
