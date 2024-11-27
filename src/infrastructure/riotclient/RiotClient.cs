@@ -184,6 +184,28 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
             }
         }
 
+        public async Task<RiotClientData.GetSummonerAccountInfoResponse> GetSummonerAccountInfoByPuuid(string puuid)
+        {
+            var url = $"https://asia.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}?api_key={_riotApiKey}";
 
+            var response = await _httpClient.GetAsync(url);
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<RiotClientData.GetSummonerAccountInfoResponse>(jsonResponse) ?? throw new Exception();
+            }
+            catch (Exception e)
+            {
+                if (e is HttpRequestException)
+                {
+                    throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR, e.Message);
+                }
+
+                throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, e.Message);
+            }
+        }
     }
 }

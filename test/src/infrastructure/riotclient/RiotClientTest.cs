@@ -165,12 +165,34 @@ namespace test.src.infrastructure.riotclient
             Assert.True(summonerInfo.Puuid == summonerAccountInfo.Puuid);
         }
 
-        [Fact(DisplayName = "GET_SUMMONER_INFO_BY_SUMMONER_ID_FAILURE_THROW_BY_SUMMONER_NOT_FOUND")]
+        [Fact(DisplayName = "GET_SUMMONER_INFO_BY_SUMMONER_ID_FAILURE_THROW_BY_RIOT_CLIENT_EXTERNAL_ERROR")]
         public async Task GET_SUMMONER_INFO_BY_SUMMONER_ID_FAILURE_THROW_BY_SUMMONER_NOT_FOUND()
         {
             var summonerId = "lQ22_kXpjvoxrG2Sd99YrDxulZiubI5f_hchP49Swqp11g";
 
             var exception = await Assert.ThrowsAsync<BusinessException>(() => _riotClient.GetSummonerInfoBySummonerId(summonerId));
+
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Code, exception.ErrorCode.Code);
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Message, exception.ErrorCode.Message);
+            Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Status, exception.ErrorCode.Status);
+        }
+
+        [Fact(DisplayName = "GET_SUMMONER_ACCOUNT_INFO_BY_PUUID_SUCCESS")]
+        public async Task GET_SUMMONER_ACCOUNT_INFO_BY_SUMMONER_ID_SUCCESS()
+        {
+            var summonerAccountInfo = await _riotClient.GetSummonerAccountInfoByGameNameAndTagLine("반달곰수", "KR1");
+
+            var summonerAccountInfoByPuuid = await _riotClient.GetSummonerAccountInfoByPuuid(summonerAccountInfo.Puuid);
+
+            Assert.Equal(summonerAccountInfo.Puuid, summonerAccountInfoByPuuid.Puuid);
+            Assert.Equal(summonerAccountInfo.GameName, summonerAccountInfoByPuuid.GameName);
+            Assert.Equal(summonerAccountInfo.TagLine, summonerAccountInfoByPuuid.TagLine);
+        }
+
+        [Fact(DisplayName = "GET_SUMMONER_ACCOUNT_INFO_BY_PUUID_FAILURE_THROW_BY_RIOT_CLIENT_EXTERNAL_ERROR")]
+        public async Task GET_SUMMONER_ACCOUNT_INFO_BY_PUUID_FAILURE_THROW_BY_SUMMONER_NOT_FOUND()
+        {
+            var exception = await Assert.ThrowsAsync<BusinessException>(() => _riotClient.GetSummonerAccountInfoByPuuid("asfqwfqwgkagjakldgnamdgnmaegnla"));
 
             Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Code, exception.ErrorCode.Code);
             Assert.Equal(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR.Message, exception.ErrorCode.Message);
