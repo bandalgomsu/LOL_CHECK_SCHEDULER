@@ -4,9 +4,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-RUN apt-get update && apt-get install -y tzdata && \
-    ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
-    dpkg-reconfigure --frontend noninteractive tzdata
+ENV TZ=Asia/Seoul
 
 # 2. 빌드 이미지 설정
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
