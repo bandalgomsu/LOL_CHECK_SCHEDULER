@@ -86,5 +86,29 @@ namespace test.src.app.summoners
             Assert.Equal(updateSummoner.Puuid, response.Puuid);
             Assert.Equal(updateSummoner.GameName, response.GameName);
         }
+
+        [Fact(DisplayName = "GET_SUMMONER_BY_PUUID_SUCCESS")]
+        public async Task GET_SUMMONER_BY_PUUID_SUCCESS()
+        {
+            var summoner = new Summoner
+            {
+                Id = 1,
+                Puuid = "TEST",
+                GameName = "TEST",
+                TagLine = "TEST",
+                Introduce = "TEST"
+            };
+
+            _summonerRepository.Setup(repo => repo.FindByCondition(summoner => summoner.Puuid == "TEST"))
+                .ReturnsAsync(summoner);
+
+            var response = await _summonerService.GetSummonerByPuuid("TEST");
+
+            Assert.Equal(summoner.Id, response.Id);
+            Assert.Equal(summoner.Puuid, response.Puuid);
+            Assert.Equal(summoner.GameName, response.GameName);
+            Assert.Equal(summoner.TagLine, response.TagLine);
+            Assert.Equal(summoner.Introduce, response.Introduce);
+        }
     }
 }
