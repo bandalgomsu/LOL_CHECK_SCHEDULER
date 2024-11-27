@@ -21,12 +21,12 @@ namespace lol_check_scheduler.src.infrastructure.database
             {
                 if (entityEntry.State == EntityState.Added)
                 {
-                    ((BaseEntity)entityEntry.Entity).CreatedAt = DateTime.UtcNow;
+                    ((BaseEntity)entityEntry.Entity).CreatedAt = DateTime.Now;
                 }
 
                 if (entityEntry.State == EntityState.Modified)
                 {
-                    ((BaseEntity)entityEntry.Entity).UpdatedAt = DateTime.UtcNow;
+                    ((BaseEntity)entityEntry.Entity).UpdatedAt = DateTime.Now;
                 }
             }
 
