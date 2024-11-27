@@ -31,5 +31,17 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
 
             public bool IsCurrentPlayingGame { get; set; } = true;
         }
+
+        public class LeagueListDTO
+        {
+            [JsonPropertyName("entries")]
+            public required IEnumerable<LeagueItemDTO> Entries { get; set; }
+        }
+
+        public class LeagueItemDTO
+        {
+            [JsonPropertyName("summonerId")]
+            public required string SummonerId { get; set; }
+        }
     }
 }

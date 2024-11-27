@@ -87,5 +87,77 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
                 throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, e.Message);
             }
         }
+
+        public async Task<RiotClientData.LeagueListDTO> GetLeagueListInChallengerLeagues()
+        {
+            var url = $"https://kr.api.riotgames.com/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?api_key={_riotApiKey}";
+
+            var response = await _httpClient.GetAsync(url);
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<RiotClientData.LeagueListDTO>(jsonResponse) ?? throw new Exception();
+            }
+            catch (Exception e)
+            {
+                if (e is HttpRequestException)
+                {
+                    throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR, e.Message);
+                }
+
+                throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, e.Message);
+            }
+        }
+
+        public async Task<RiotClientData.LeagueListDTO> GetLeagueListInGrandMasterLeagues()
+        {
+            var url = $"https://kr.api.riotgames.com/lol/league/v4/grandmasterleagues/by-queue/RANKED_SOLO_5x5?api_key={_riotApiKey}";
+
+            var response = await _httpClient.GetAsync(url);
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<RiotClientData.LeagueListDTO>(jsonResponse) ?? throw new Exception();
+            }
+            catch (Exception e)
+            {
+                if (e is HttpRequestException)
+                {
+                    throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR, e.Message);
+                }
+
+                throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, e.Message);
+            }
+        }
+
+        public async Task<RiotClientData.LeagueListDTO> GetLeagueListInMasterLeagues()
+        {
+            var url = $"https://kr.api.riotgames.com/lol/league/v4/masterleagues/by-queue/RANKED_SOLO_5x5?api_key={_riotApiKey}";
+
+            var response = await _httpClient.GetAsync(url);
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<RiotClientData.LeagueListDTO>(jsonResponse) ?? throw new Exception();
+            }
+            catch (Exception e)
+            {
+                if (e is HttpRequestException)
+                {
+                    throw new BusinessException(RiotClientErrorCode.RIOT_CLIENT_EXTERNAL_ERROR, e.Message);
+                }
+
+                throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR, e.Message);
+            }
+        }
     }
 }

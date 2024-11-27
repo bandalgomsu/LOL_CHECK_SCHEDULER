@@ -16,9 +16,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 
-namespace test.src.app.scheduler
+namespace test.src.app.job
 {
-    public class CheckPlayingGameSchedulerTest
+    public class CheckPlayingGameJobTest
     {
         private readonly Mock<IServiceScopeFactory> _serviceScopeFactory = new Mock<IServiceScopeFactory>();
         private readonly Mock<IServiceScope> _serviceScope = new Mock<IServiceScope>();
@@ -30,7 +30,7 @@ namespace test.src.app.scheduler
 
         private readonly CheckPlayingGameJob _checkPlayingGameScheduler;
 
-        public CheckPlayingGameSchedulerTest()
+        public CheckPlayingGameJobTest()
         {
             _checkPlayingGameScheduler = new CheckPlayingGameJob(
                 riotClient: _riotClient.Object,

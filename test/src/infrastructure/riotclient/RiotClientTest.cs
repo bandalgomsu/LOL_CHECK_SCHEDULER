@@ -91,5 +91,28 @@ namespace test.src.infrastructure.riotclient
             Assert.Equal("RIOT_CLIENT_EXTERNAL_ERROR", exception.ErrorCode.Message);
         }
 
+        [Fact(DisplayName = "GET_LEAGUE_LIST_BY_CHALLENGER_LEAGUES_SUCCESS")]
+        public async Task GET_LEAGUE_LIST_BY_CHALLENGER_LEAGUES_SUCCESS()
+        {
+            var leagueList = await _riotClient.GetLeagueListInChallengerLeagues();
+
+            Assert.True(leagueList.Entries.Count() > 0);
+        }
+
+        [Fact(DisplayName = "GET_LEAGUE_LIST_BY_GRANDMASTER_LEAGUES_SUCCESS")]
+        public async Task GET_LEAGUE_LIST_BY_GRANDMASTER_LEAGUES_SUCCESS()
+        {
+            var leagueList = await _riotClient.GetLeagueListInGrandMasterLeagues();
+
+            Assert.True(leagueList.Entries.Count() > 0);
+        }
+
+        [Fact(DisplayName = "GET_LEAGUE_LIST_BY_MASTER_LEAGUES_SUCCESS")]
+        public async Task GET_LEAGUE_LIST_BY_MASTER_LEAGUES_SUCCESS()
+        {
+            var leagueList = await _riotClient.GetLeagueListInMasterLeagues();
+
+            Assert.True(leagueList.Entries.Count() > 0);
+        }
     }
 }

@@ -14,6 +14,9 @@ using Quartz;
 
 namespace lol_check_scheduler.src.app.job
 {
+    /**
+    **  소환사 게임 시작 감지 및 게임 시작 푸시 알림 발송 작업
+    **/
     public class CheckPlayingGameJob(
         IRiotClient riotClient,
         IFcmClient fcmClient,
