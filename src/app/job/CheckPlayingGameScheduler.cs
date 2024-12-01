@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +36,8 @@ namespace lol_check_scheduler.src.app.job
 
         public async Task CheckPlayingGame()
         {
+            var stopwatch = Stopwatch.StartNew();
+
             IEnumerable<Summoner> summoners = await summonerService.GetSummonersByTopN(49);
 
             List<Summoner> playingSummoners = new List<Summoner>();
@@ -65,6 +68,9 @@ namespace lol_check_scheduler.src.app.job
             _logger.LogInformation("FAILURE_COUNT : {}", playingSummoners.Count() - success.Count());
 
             _ = PatchSuccessSummoners(success);
+
+            stopwatch.Stop();
+            _logger.LogInformation("WORK_TIME = {}", stopwatch.ElapsedMilliseconds);
         }
 
         private async Task<IEnumerable<Summoner>> SendMulticastMessageProcess(IEnumerable<Summoner> forUpdateSummoner)

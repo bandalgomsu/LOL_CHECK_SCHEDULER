@@ -73,15 +73,22 @@ builder.Services.AddSingleton<IRiotClient, RiotClient>();
 // FCM_CLIENT_DI
 builder.Services.AddSingleton<IFcmClient, FcmClient>();
 
-// SCHEDULER_DI
+// Job_DI
 builder.Services.AddQuartz(q =>
     {
-        var jobKey = new JobKey("CHECK_PLAYING_GAME_JOB");
-        q.AddJob<CheckPlayingGameJob>(opts => opts.WithIdentity(jobKey));
+        var checkPlayingGameJobKey = new JobKey("CHECK_PLAYING_GAME_JOB");
+        q.AddJob<CheckPlayingGameJob>(opts => opts.WithIdentity(checkPlayingGameJobKey));
         q.AddTrigger(opts => opts
-            .ForJob(jobKey)
+            .ForJob(checkPlayingGameJobKey)
             .WithIdentity("CHECK_PLAYING_GAME")
             .WithCronSchedule("1 * * * * ?"));
+
+        // var warmUpSummonerJobKey = new JobKey("WARM_UP_SUMMONER_JOB");
+        // q.AddJob<WarmUpSummonerJob>(opts => opts.WithIdentity(warmUpSummonerJobKey));
+        // q.AddTrigger(opts => opts
+        //     .ForJob(warmUpSummonerJobKey)
+        //     .WithIdentity("WARM_UP_SUMMONER")
+        //     .WithCronSchedule("0 6 21 * * ?"));
     }
 );
 
