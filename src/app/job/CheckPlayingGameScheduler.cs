@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -40,9 +41,11 @@ namespace lol_check_scheduler.src.app.job
 
             IEnumerable<Summoner> summoners = await summonerService.GetSummonersByTopN(49);
 
-            List<Summoner> playingSummoners = new List<Summoner>();
+            var batchSize = 10;
 
-            IEnumerable<Task> tasks = summoners.Select(async summoner =>
+            ConcurrentBag<Summoner> playingSummoners = [];
+
+            var tasks = summoners.Select(async summoner =>
             {
                 RiotClientData.CurrentGameInfo currentGameInfo = await riotClient.GetCurrentGameInfo(summoner.Puuid!);
 
@@ -51,9 +54,13 @@ namespace lol_check_scheduler.src.app.job
                     summoner.RecentGameId = currentGameInfo.GameId;
                     playingSummoners.Add(summoner);
                 }
-            });
+            }
+            ).Chunk(batchSize);
 
-            await Task.WhenAll(tasks);
+            foreach (var batch in tasks)
+            {
+                await Task.WhenAll(batch);
+            }
 
             _logger.LogInformation("TOTAL_COUNT : {}", playingSummoners.Count());
 
@@ -77,7 +84,7 @@ namespace lol_check_scheduler.src.app.job
         {
             var tasks = forUpdateSummoner.Select(async summoner =>
             {
-                IEnumerable<string> tokens = await GetTokens(summoner);
+                var tokens = await GetTokens(summoner);
 
                 if (tokens.Any())
                 {
