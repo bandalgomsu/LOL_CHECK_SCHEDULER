@@ -77,7 +77,7 @@ namespace lol_check_scheduler.src.app.job
             _ = PatchSuccessSummoners(success);
 
             stopwatch.Stop();
-            _logger.LogInformation("WORK_TIME = {}", stopwatch.ElapsedMilliseconds);
+            _logger.LogInformation("WORK_TIME = {}ms", stopwatch.ElapsedMilliseconds);
         }
 
         private async Task<IEnumerable<Summoner>> SendMulticastMessageProcess(IEnumerable<Summoner> forUpdateSummoner)
