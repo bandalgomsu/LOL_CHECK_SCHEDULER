@@ -20,7 +20,6 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
         private readonly string _riotApiKey;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
-        private readonly HttpClient _httpClient;
 
         public RiotClient(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
@@ -28,11 +27,12 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
             _configuration = configuration;
             _riotApiKey = _configuration["RiotApiKey"]!;
 
-            _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
         }
 
         public async Task<RiotClientData.GetSummonerAccountInfoResponse> GetSummonerAccountInfoByGameNameAndTagLine(string gameName, string tagLine)
         {
+            var _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
+
             var url = $"https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}?api_key={_riotApiKey}";
 
             var response = await _httpClient.GetAsync(url);
@@ -59,6 +59,8 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
 
         public async Task<RiotClientData.CurrentGameInfo> GetCurrentGameInfo(string puuid)
         {
+            var _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
+
             var url = $"https://kr.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/{puuid}?api_key={_riotApiKey}";
 
             var response = await _httpClient.GetAsync(url);
@@ -90,6 +92,8 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
 
         public async Task<RiotClientData.LeagueListDTO> GetLeagueListInChallengerLeagues()
         {
+            var _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
+
             var url = $"https://kr.api.riotgames.com/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?api_key={_riotApiKey}";
 
             var response = await _httpClient.GetAsync(url);
@@ -114,6 +118,8 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
 
         public async Task<RiotClientData.LeagueListDTO> GetLeagueListInGrandMasterLeagues()
         {
+            var _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
+
             var url = $"https://kr.api.riotgames.com/lol/league/v4/grandmasterleagues/by-queue/RANKED_SOLO_5x5?api_key={_riotApiKey}";
 
             var response = await _httpClient.GetAsync(url);
@@ -138,6 +144,8 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
 
         public async Task<RiotClientData.LeagueListDTO> GetLeagueListInMasterLeagues()
         {
+            var _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
+
             var url = $"https://kr.api.riotgames.com/lol/league/v4/masterleagues/by-queue/RANKED_SOLO_5x5?api_key={_riotApiKey}";
 
             var response = await _httpClient.GetAsync(url);
@@ -162,6 +170,8 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
 
         public async Task<RiotClientData.GetSummonerInfoResponse> GetSummonerInfoBySummonerId(string summonerId)
         {
+            var _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
+
             var url = $"https://kr.api.riotgames.com/lol/summoner/v4/summoners/{summonerId}?api_key={_riotApiKey}";
 
             var response = await _httpClient.GetAsync(url);
@@ -186,6 +196,8 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
 
         public async Task<RiotClientData.GetSummonerAccountInfoResponse> GetSummonerAccountInfoByPuuid(string puuid)
         {
+            var _httpClient = _httpClientFactory.CreateClient("RIOT_CLIENT");
+
             var url = $"https://asia.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}?api_key={_riotApiKey}";
 
             var response = await _httpClient.GetAsync(url);
