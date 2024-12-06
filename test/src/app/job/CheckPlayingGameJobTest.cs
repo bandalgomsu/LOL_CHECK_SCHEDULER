@@ -15,6 +15,7 @@ using lol_check_scheduler.src.infrastructure.riotclient.interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
+using Microsoft.Extensions.Logging;
 
 namespace test.src.app.job
 {
@@ -27,7 +28,7 @@ namespace test.src.app.job
         private readonly Mock<ISummonerService> _summonerService = new Mock<ISummonerService>();
         private readonly Mock<IDeviceService> _deviceService = new Mock<IDeviceService>();
         private readonly Mock<ISubscriberService> _subscriberService = new Mock<ISubscriberService>();
-
+        private readonly Mock<ILogger<CheckPlayingGameJob>> _logger = new Mock<ILogger<CheckPlayingGameJob>>();
         private readonly CheckPlayingGameJob _checkPlayingGameScheduler;
 
         public CheckPlayingGameJobTest()
@@ -37,7 +38,8 @@ namespace test.src.app.job
                 fcmClient: _fcmClient.Object,
                 summonerService: _summonerService.Object,
                 deviceService: _deviceService.Object,
-                subscriberService: _subscriberService.Object
+                subscriberService: _subscriberService.Object,
+                logger: _logger.Object
             );
         }
 

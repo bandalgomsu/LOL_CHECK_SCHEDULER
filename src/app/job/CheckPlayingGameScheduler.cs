@@ -24,12 +24,10 @@ namespace lol_check_scheduler.src.app.job
         IFcmClient fcmClient,
         ISummonerService summonerService,
         IDeviceService deviceService,
-        ISubscriberService subscriberService
+        ISubscriberService subscriberService,
+        ILogger<CheckPlayingGameJob> logger
         ) : IJob
     {
-
-        private readonly ILogger<CheckPlayingGameJob> _logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<CheckPlayingGameJob>();
-
         public async Task Execute(IJobExecutionContext context)
         {
             await CheckPlayingGame();
@@ -62,7 +60,7 @@ namespace lol_check_scheduler.src.app.job
                 await Task.WhenAll(batch);
             }
 
-            _logger.LogInformation("TOTAL_COUNT : {}", playingSummoners.Count());
+            logger.LogInformation("TOTAL_COUNT : {}", playingSummoners.Count());
 
             if (!playingSummoners.Any())
             {
@@ -71,13 +69,13 @@ namespace lol_check_scheduler.src.app.job
 
             IEnumerable<Summoner> success = await SendMulticastMessageProcess(playingSummoners);
 
-            _logger.LogInformation("SUCCESS_COUNT : {}", success.Count());
-            _logger.LogInformation("FAILURE_COUNT : {}", playingSummoners.Count() - success.Count());
+            logger.LogInformation("SUCCESS_COUNT : {}", success.Count());
+            logger.LogInformation("FAILURE_COUNT : {}", playingSummoners.Count() - success.Count());
 
             _ = PatchSuccessSummoners(success);
 
             stopwatch.Stop();
-            _logger.LogInformation("WORK_TIME = {}ms", stopwatch.ElapsedMilliseconds);
+            logger.LogInformation("WORK_TIME = {}ms", stopwatch.ElapsedMilliseconds);
         }
 
         private async Task<IEnumerable<Summoner>> SendMulticastMessageProcess(IEnumerable<Summoner> forUpdateSummoner)
