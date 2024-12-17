@@ -81,6 +81,7 @@ builder.Services.AddQuartz(q =>
         q.AddTrigger(opts => opts
             .ForJob(checkPlayingGameJobKey)
             .WithIdentity("CHECK_PLAYING_GAME")
+            // .WithCronSchedule("* * * * * ?"));
             .WithCronSchedule("1 * * * * ?"));
 
         // var warmUpSummonerJobKey = new JobKey("WARM_UP_SUMMONER_JOB");
@@ -89,6 +90,7 @@ builder.Services.AddQuartz(q =>
         //     .ForJob(warmUpSummonerJobKey)
         //     .WithIdentity("WARM_UP_SUMMONER")
         //     .WithCronSchedule("0 6 21 * * ?"));
+
     }
 );
 

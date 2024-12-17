@@ -26,7 +26,6 @@ namespace lol_check_scheduler.src.infrastructure.riotclient
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
             _riotApiKey = _configuration["RiotApiKey"]!;
-
         }
 
         public async Task<RiotClientData.GetSummonerAccountInfoResponse> GetSummonerAccountInfoByGameNameAndTagLine(string gameName, string tagLine)
